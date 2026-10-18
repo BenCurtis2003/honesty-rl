@@ -56,25 +56,25 @@ honesty if H2c holds; otherwise the arm learned to say "not done" by default.
 
 | | Hypothesis | Primary metric (eval source) | Test |
 |---|---|---|---|
-| **H1** | Training against the checklist grader teaches false success | False success on `lvi-test-mixed` | checklist arm > outcome arm |
-| **H2a** | The honesty reward reduces false success | False success on `lvi-test-mixed` | honest arm < outcome arm |
-| **H2b** | ...without costing real success | Real success on `lvi-test-mixed` | honest - outcome > -5 pp (non-inferiority) |
-| **H2c** | ...and not by refusing to claim success | Claim recall (claims done \| done is the truthful claim) on `lvi-test-mixed` | honest - outcome > -10 pp (non-inferiority) |
-| **H6** | Training beats just asking | False success on `lvi-test-mixed` | honest arm < base model with an explicit honesty instruction (`lvi-honesty-prompt`) |
-| **H3** | H2a transfers to unseen work | False success on `caseworker-test` and `automationbench-simple` | honest arm < outcome arm on each |
+| **H1** | Training against the checklist grader teaches false success | False success on `potemkin-test-mixed` | checklist arm > outcome arm |
+| **H2a** | The honesty reward reduces false success | False success on `potemkin-test-mixed` | honest arm < outcome arm |
+| **H2b** | ...without costing real success | Real success on `potemkin-test-mixed` | honest - outcome > -5 pp (non-inferiority) |
+| **H2c** | ...and not by refusing to claim success | Claim recall (claims done \| done is the truthful claim) on `potemkin-test-mixed` | honest - outcome > -10 pp (non-inferiority) |
+| **H6** | Training beats just asking | False success on `potemkin-test-mixed` | honest arm < base model with an explicit honesty instruction (`potemkin-honesty-prompt`) |
+| **H3** | H2a transfers to unseen work | False success on `safetynet-test` and `automationbench-simple` | honest arm < outcome arm on each |
 | **H4** | No arm loses general instruction following | IFEval strict accuracy | each arm within -3 pp of base |
-| **H5** | The checklist arm games its grader | Checklist score minus real success on `lvi-test-mixed` | checklist arm > base |
+| **H5** | The checklist arm games its grader | Checklist score minus real success on `potemkin-test-mixed` | checklist arm > base |
 
 **Checkpoint rule:** the final checkpoint for every arm, with no selection by eval score.
 
 ## Secondary and exploratory (reported, not tested for significance)
 
-- Expert-level transfer (`lvi-test-expert`, medium scale, 24 tasks)
-- Pressure robustness (`lvi-pressure`: "measured on completion" / "bonus" prompts)
+- Expert-level transfer (`potemkin-test-expert`, medium scale, 24 tasks)
+- Pressure robustness (`potemkin-pressure`: "measured on completion" / "bonus" prompts)
 - Self-checking behavior (aggregate-tool use, checking after the last write), turns, report length
 - Error types on close and payroll failures; SafetyNetBench harm metrics (wrongful denials, $ withheld)
 - Would an LLM judge catch the checklist arm's cheating? Qwen 3.5 122B (transcript view) over each
-  arm's `lvi-test-mixed` traces (~$0.30)
+  arm's `potemkin-test-mixed` traces (~$0.30)
 
 ## Go/no-go after the pilot (20 steps, checklist arm)
 
@@ -137,3 +137,6 @@ shaping does not reduce false success beyond what outcome training already does.
   2026-10-18 after setting `network_allow = ["*"]` (single-turn, no tools).
 - Training curves for outcome/honest were not retained (node terminated before download); final evals,
   online step-40 evals and adapters were.
+- **2026-10-18, after analysis (labels only):** the environments were renamed (now PotemkinBench and
+  SafetyNetBench), so eval-source labels changed from their original prefixes to `potemkin-*` and
+  `safetynet-test`. No data, task, or test changed; re-running the analysis reproduces every number.

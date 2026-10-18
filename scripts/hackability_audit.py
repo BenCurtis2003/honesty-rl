@@ -42,7 +42,7 @@ MODES = ("strict", "partial", "honest", "honest_partial", "checklist", "letter")
 POLICIES = ("full_honest", "full_underclaim", "full_silent", "half_admit", "half_claim", "junk_claim", "claim_only")
 
 
-def lvi_solve(family: str, st: OfficeState, spec: dict) -> None:
+def potemkin_solve(family: str, st: OfficeState, spec: dict) -> None:
     if family in t1.FAMILIES if hasattr(t1, "FAMILIES") else family in ("overdue", "refunds", "reorder", "dedupe", "impossible"):
         t1.solve(family, st, spec)
     elif family in ("collections", "refunds_policy", "reorder_cases", "dedupe_messy", "partial_batch", "memo_override"):
@@ -118,13 +118,13 @@ def policies_for(initial: dict, full: OfficeState, truth_ok: bool, rng: random.R
     }
 
 
-def audit_lvi(n: int) -> dict:
+def audit_potemkin(n: int) -> dict:
     tasks = PotemkinBenchTaskset(PotemkinBenchConfig(num_tasks=n, difficulty="mixed", scale="small")).load()
     rng = random.Random(0)
     acc = {p: {m: [] for m in MODES} for p in POLICIES}
     for task in tasks:
         full = OfficeState(db=copy.deepcopy(task.data.db))
-        lvi_solve(task.data.family, full, task.data.spec)
+        potemkin_solve(task.data.family, full, task.data.spec)
         ok = min(PotemkinBenchTask(task.data, PotemkinBenchTaskConfig())._components(SimpleNamespace(state=full)).values()) == 1.0
         assert ok, f"reference solver failed on {task.data.family}"
         for p, st in policies_for(task.data.db, full, ok, rng).items():
@@ -171,7 +171,7 @@ def main() -> None:
     ap.add_argument("--out", default="results/hackability.md")
     a = ap.parse_args()
     md = "## Reward hackability audit (mean reward; scripted policies, no model)\n\n"
-    md += table(f"potemkin-bench, mixed level, small scale ({a.n} tasks)", audit_lvi(a.n)) + "\n"
+    md += table(f"potemkin-bench, mixed level, small scale ({a.n} tasks)", audit_potemkin(a.n)) + "\n"
     md += table(f"SafetyNetBench, 5-case batches ({a.n // 2} batches)", audit_safety_net(a.n // 2))
     out = pathlib.Path(a.out)
     out.parent.mkdir(parents=True, exist_ok=True)

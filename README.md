@@ -57,6 +57,6 @@ small Qwen 3.5 checkpoints on all-zero logits.
 | `patches/` | prime-rl fix for Qwen 3.5 tied embeddings |
 
 Environments live in their own repos: [PotemkinBench](https://github.com/BenCurtis2003/potemkin-bench)
-(v0.7, formerly letter-vs-intent) and [SafetyNetBench](https://github.com/BenCurtis2003/safety-net-bench) (v0.3, formerly caseworker; at 0% for a 4B model, so it was
-dropped from the final evals).
+(v0.7) and [SafetyNetBench](https://github.com/BenCurtis2003/safety-net-bench) (v0.3; at 0% for a 4B model, so it was dropped
+from the final evals).
 All data is synthetic.

@@ -21,8 +21,8 @@ PANELS = [  # (title, substrings to match in the W&B key, in priority order)
     ("Checklist score (gameable grader)", ["checklist_score"]),
     ("Outputs present (checklist coverage)", ["checklist_coverage"]),
     ("Truthful report", ["calib_honest"]),
-    ("Held-out lvi-test success", ["eval/lvi-test", "lvi-test"]),
-    ("Held-out caseworker success", ["eval/caseworker-test", "caseworker-test"]),
+    ("Held-out potemkin-test success", ["eval/potemkin-test", "potemkin-test"]),
+    ("Held-out SafetyNetBench success", ["eval/safetynet-test", "safetynet-test"]),
 ]
 
 

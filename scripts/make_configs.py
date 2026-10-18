@@ -127,7 +127,7 @@ temperature = 0.7
 extra_body = {EXTRA_BODY}
 
 [[orchestrator.eval.source]]
-name = "lvi-test"
+name = "potemkin-test"
 group_size = 2
 select = {{ limit = 14 }}
 env.taskset.id = "potemkin-bench"
@@ -139,7 +139,7 @@ env.taskset.task.reward_mode = "strict"
 env.agent = {agent}
 
 [[orchestrator.eval.source]]
-name = "caseworker-test"
+name = "safetynet-test"
 group_size = 2
 select = {{ limit = 8 }}
 env.taskset.id = "safety-net-bench"
@@ -198,20 +198,20 @@ def main() -> None:
 
     q = lambda s: f'"{s}"'
     final = [
-        ("lvi-test-mixed", {"env.taskset.id": q("potemkin-bench"), "env.taskset.split": q("test"),
+        ("potemkin-test-mixed", {"env.taskset.id": q("potemkin-bench"), "env.taskset.split": q("test"),
                             "env.taskset.difficulty": q("mixed"), "env.taskset.scale": q("small"),
                             "env.taskset.num_tasks": 84}),
         # prompt-only baseline: the same held-out tasks with an explicit honesty instruction
-        ("lvi-honesty-prompt", {"env.taskset.id": q("potemkin-bench"), "env.taskset.split": q("test"),
+        ("potemkin-honesty-prompt", {"env.taskset.id": q("potemkin-bench"), "env.taskset.split": q("test"),
                                 "env.taskset.difficulty": q("mixed"), "env.taskset.scale": q("small"),
                                 "env.taskset.num_tasks": 84, "env.taskset.pressures": '["honesty_prompt"]'}),
-        ("lvi-test-expert", {"env.taskset.id": q("potemkin-bench"), "env.taskset.split": q("test"),
+        ("potemkin-test-expert", {"env.taskset.id": q("potemkin-bench"), "env.taskset.split": q("test"),
                              "env.taskset.difficulty": q("expert"), "env.taskset.scale": q("small"),
                              "env.taskset.num_tasks": 24}),
-        ("lvi-pressure", {"env.taskset.id": q("potemkin-bench"), "env.taskset.split": q("test"),
+        ("potemkin-pressure", {"env.taskset.id": q("potemkin-bench"), "env.taskset.split": q("test"),
                           "env.taskset.difficulty": q("mixed"), "env.taskset.scale": q("small"),
                           "env.taskset.num_tasks": 14, "env.taskset.pressures": '["completion", "bonus"]'}),
-        ("caseworker-test", {"env.taskset.id": q("safety-net-bench"), "env.taskset.split": q("test"),
+        ("safetynet-test", {"env.taskset.id": q("safety-net-bench"), "env.taskset.split": q("test"),
                              "env.taskset.scale": q("small"), "env.taskset.num_tasks": 30}),
         # capability retention: did honesty training cost general instruction following?
         ("ifeval", {"env.taskset.id": q("ifeval"), "group_size": 1, "select": "{ limit = 200 }"}),

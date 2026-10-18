@@ -1,11 +1,11 @@
-env       letter-vs-intent  ·  null harness  ·  subprocess runtime              
+env       potemkin-bench  ·  null harness  ·  subprocess runtime              
 model     Qwen/Qwen3.5-9B  (chat_template_kwargs={'enable_thinking': 'false'})  
           via https://api.pinference.ai/api/v1                                  
 taskset   difficulty=mixed  ·  num_tasks=14  ·  scale=small  ·  split=test      
 limits    ≤4 episodes       ·  40 turns       ·  no token cap                   
 timeouts  no setup timeout  ·  rollout 1200s  ·  no finalize timeout  ·  no     
           scoring timeout  ·  no env finalize timeout                           
-output    /Users/benjamincurtis/code/honesty-rl/results/probe/letter-vs-intent--
+output    /Users/benjamincurtis/code/honesty-rl/results/probe/potemkin-bench--
           qwen--qwen3.5-9b--null--44875411                                      
 ━━━━━━━━━━━━━━━━━━━━━━ 28/28 · 10m 39s · reward 0.86 · err 0.00  (page 2/14 ◄ ►)
 rewards   intent 0.86                                                           

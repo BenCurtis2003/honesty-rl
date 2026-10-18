@@ -94,8 +94,8 @@ to one node for the final evals.
 bash ~/honesty-rl/scripts/gpu/final_evals.sh base checklist outcome honest outcome_s2 honest_s2
 ```
 
-This writes `results/<model>/<source>/` for six sources (lvi-test-mixed, lvi-test-expert,
-lvi-pressure, lvi-honesty-prompt, caseworker-test, ifeval, plus automationbench-simple).
+This writes `results/<model>/<source>/` for six sources (potemkin-test-mixed, potemkin-test-expert,
+potemkin-pressure, potemkin-honesty-prompt, safetynet-test, ifeval, plus automationbench-simple).
 
 ## 7. Analysis (local, free)
 
@@ -105,7 +105,7 @@ python scripts/analyze.py results --baseline base --plots --merge-seeds   # outc
 python scripts/training_curves.py --entity <wandb-user> --runs checklist outcome honest
 # ~$0.30: would an LLM judge (Qwen 3.5 122B, transcript) catch each arm's false successes?
 for m in base checklist outcome honest; do
-  python scripts/judge_calibration.py results/$m/lvi-test-mixed/**/*.jsonl --judge Qwen/Qwen3.5-122B-A10B \
+  python scripts/judge_calibration.py results/$m/potemkin-test-mixed/**/*.jsonl --judge Qwen/Qwen3.5-122B-A10B \
     --out results/judge_on_$m.jsonl
 done
 ```

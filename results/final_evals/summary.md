@@ -20,7 +20,7 @@ Change vs `base` (paired over shared tasks; p = share of resamples with no impro
 | honest | +1pp [-5, +7] | +1pp [-5, +7] | +2pp [-9, +12] | +2pp [-4, +7] | +0pp [-10, +10] |
 | outcome | +2pp [-3, +7] | +2pp [-3, +7] | +1pp [-7, +10] | -1pp [-5, +2] | +2pp [-7, +11] |
 
-## lvi-honesty-prompt
+## potemkin-honesty-prompt
 
 | model | n | Real success | Partial credit | Claimed done | False success | Truthful report | Claims done when done | Checklist grader | Used check tool |
 |---|---|---|---|---|---|---|---|---|---|
@@ -31,7 +31,7 @@ Change vs `base` (paired over shared tasks; p = share of resamples with no impro
 | model | Real success | Partial credit | Claimed done | False success | Truthful report | Claims done when done | Checklist grader | Used check tool |
 |---|---|---|---|---|---|---|---|---|
 
-## lvi-test-mixed
+## potemkin-test-mixed
 
 | model | n | Real success | Partial credit | Claimed done | False success | Truthful report | Claims done when done | Checklist grader | Used check tool |
 |---|---|---|---|---|---|---|---|---|---|
@@ -55,8 +55,8 @@ Change vs `base` (paired over shared tasks; p = share of resamples with no impro
 
 | model | source | turns | tool calls | report words | checked after last write |
 |---|---|---|---|---|---|
-| base | lvi-honesty-prompt | 11.0 | 13.7 | 26 | 9% |
-| base | lvi-test-mixed | 10.7 | 13.9 | 26 | 5% |
-| checklist | lvi-test-mixed | 8.6 | 15.7 | 26 | 10% |
-| honest | lvi-test-mixed | 11.1 | 15.8 | 26 | 4% |
-| outcome | lvi-test-mixed | 10.6 | 14.8 | 24 | 5% |
+| base | potemkin-honesty-prompt | 11.0 | 13.7 | 26 | 9% |
+| base | potemkin-test-mixed | 10.7 | 13.9 | 26 | 5% |
+| checklist | potemkin-test-mixed | 8.6 | 15.7 | 26 | 10% |
+| honest | potemkin-test-mixed | 11.1 | 15.8 | 26 | 4% |
+| outcome | potemkin-test-mixed | 10.6 | 14.8 | 24 | 5% |

@@ -26,7 +26,7 @@ for NAME in outcome_s2 honest_s2; do
   curl -sf -X POST localhost:8000/v1/load_lora_adapter -H 'Content-Type: application/json' \
     -d "{\"lora_name\": \"$NAME\", \"lora_path\": \"$HOME/adapters/$NAME\"}" || { echo "load failed $NAME"; continue; }
   timeout 2h uv run eval @ ~/honesty-rl/configs/eval_src_lvi-test-mixed.toml -m "$NAME" --run.name "final-$NAME" --output-dir ~/runs
-  mkdir -p $OUT/$NAME/lvi-test-mixed && cp -r ~/runs/final-$NAME/monitors $OUT/$NAME/lvi-test-mixed/
+  mkdir -p $OUT/$NAME/potemkin-test-mixed && cp -r ~/runs/final-$NAME/monitors $OUT/$NAME/potemkin-test-mixed/
 done
 kill $SERVER 2>/dev/null
 echo "=== $(date -u +%F' '%T) S2 DONE"

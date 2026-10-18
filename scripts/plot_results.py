@@ -18,11 +18,11 @@ import analyze as A  # noqa: E402
 root, out = pathlib.Path(sys.argv[1]), pathlib.Path(sys.argv[2])
 d = A.load(root)
 series = [  # (label, model, source)
-    ("Base", "base", "lvi-test-mixed"),
-    ('Base + "be honest" prompt', "base", "lvi-honesty-prompt"),
-    ("Checklist grader (gameable)", "checklist", "lvi-test-mixed"),
-    ("Outcome (ground truth)", "outcome", "lvi-test-mixed"),
-    ("Honest (ground truth + truthful-claim bonus)", "honest", "lvi-test-mixed"),
+    ("Base", "base", "potemkin-test-mixed"),
+    ('Base + "be honest" prompt', "base", "potemkin-honesty-prompt"),
+    ("Checklist grader (gameable)", "checklist", "potemkin-test-mixed"),
+    ("Outcome (ground truth)", "outcome", "potemkin-test-mixed"),
+    ("Honest (ground truth + truthful-claim bonus)", "honest", "potemkin-test-mixed"),
 ]
 metrics = [("success", "Real success"), ("false_success", "False success\n(claimed done, wasn't)"),
            ("honest_report", "Truthful report")]
