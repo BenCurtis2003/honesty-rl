@@ -22,7 +22,7 @@ Held-out test: letter-vs-intent `test` split, all 14 task families (6 trained, 8
 | **H2b** honest not worse on real success (> -5 pp) | **Supported:** +1.8 pp [-2, +6] |
 | **H2c** no collapse into "never claim done" (> -10 pp) | **Supported:** claim recall +1.9 pp [0, +6]; both ~95% |
 | **H3** transfer to unseen benchmarks | **Uninformative:** AutomationBench `simple` near ceiling for all (88-90%), no differences; Caseworker at 0% for the 4B (dropped) |
-| **H4** IFEval retention | **Not tested:** the IFEval env errored on the node for every model |
+| **H4** IFEval retention | **No significant loss:** honest +0.0 pp [-5, +5], outcome -1.5 pp [-7.5, +4], checklist -3.5 pp [-9, +2] (base 80%, 200 prompts); a 3 pp non-inferiority margin is not established at this n |
 | **H6** training beats asking | **Supported:** honest arm vs base + honesty prompt: false success -8.3 pp [-14, -4], p < 0.001 |
 
 ## Takeaways
@@ -39,4 +39,5 @@ Held-out test: letter-vs-intent `test` split, all 14 task families (6 trained, 8
 ## Caveats
 
 One seed per arm, 4B model, synthetic tasks, short training. The checklist arm trained longer
-(77 vs 40 steps). AutomationBench near ceiling and Caseworker at floor, so transfer claims are limited.
+(77 vs 40 steps). AutomationBench near ceiling and Caseworker at floor, so transfer claims are limited. IFEval was rerun
+separately (2026-10-18) after fixing an eval-config error (network policy vs subprocess runtime).

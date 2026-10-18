@@ -24,6 +24,8 @@ On 84 held-out tasks (168 attempts per model):
   claims "done" ~95% of the time when it is done).
 - **A gameable grader taught none of that.** Versus ground truth: +12.5 pp false success
   (95% CI [+4, +23], p = 0.003) and −14 pp real success.
+- **General ability intact:** IFEval strict accuracy 80% for base and the honest arm (outcome 79%,
+  checklist 77%; no significant drop).
 - **Training beats asking:** the honest arm had 8 pp less false success than the base model given an
   explicit honesty instruction (p < 0.001).
 - **The surprise:** an explicit truthful-report bonus on top of ground-truth reward added nothing
@@ -79,7 +81,7 @@ so the output layer stayed all zeros. A 5-line fix (plus a regression test) is
 | H2b: no cost to real success | **Supported** (+1.8 pp) |
 | H2c: no collapse into "never claim done" | **Supported** (claim recall ~95% in both) |
 | H3: transfer to unseen benchmarks | **Uninformative:** Zapier's AutomationBench (simple) near ceiling for all models; Caseworker at floor for a 4B |
-| H4: no loss of general instruction following (IFEval) | [IFEVAL RESULT] |
+| H4: no loss of general instruction following (IFEval) | **No significant loss:** honest +0.0 pp [-5, +5], outcome -1.5 pp [-7.5, +4], checklist -3.5 pp [-9, +2] (base 80%, 200 prompts); a 3 pp non-inferiority margin is not established at this n |
 | H6: training beats a prompt | **Supported** (−8.3 pp vs. honesty-prompted base, p < 0.001) |
 
 Full plan and every deviation, with dates: [PREREGISTRATION.md](../PREREGISTRATION.md). Full tables:
@@ -96,5 +98,5 @@ here, or the model is larger.
 ## Reproduce
 
 `docs/RUNBOOK.md`. The configs are generated from one template and validated against prime-rl's schema.
-The whole study (pilots, three arms, evals) cost about $60 of GPU time, including about $15 of mistakes
-documented in the deviations.
+The whole study (pilots, three arms, evals) cost about $52 of GPU time, roughly $20 of it on mistakes
+(a runaway run, an idle node, a stray node), all documented in the deviations.

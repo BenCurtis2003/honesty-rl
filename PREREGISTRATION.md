@@ -127,4 +127,11 @@ shaping does not reduce false success beyond what outcome training already does.
 
 ## Deviations
 
-_None yet._
+- **2026-10-17/18 run issues:** the checklist arm ran to step 77 (stop-watcher grep missed ANSI color
+  codes); outcome and honest arms ran exactly 40 steps. Primary comparisons use final evals (checklist at
+  step 77, others at 40); the checklist arm's step-40 online eval pointed the same way.
+- **Caseworker** dropped from final evals: 0% success for the 4B at steps 0 and 40 (uninformative).
+- **IFEval** errored in the first final-eval pass (task network policy vs subprocess runtime); rerun on
+  2026-10-18 after setting `network_allow = ["*"]` (single-turn, no tools).
+- Training curves for outcome/honest were not retained (node terminated before download); final evals,
+  online step-40 evals and adapters were.
