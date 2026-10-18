@@ -13,7 +13,7 @@ extra_body = { chat_template_kwargs = { enable_thinking = false } }
 
 [[source]]
 name = "lvi-test-mixed"
-env.taskset.id = "letter-vs-intent"
+env.taskset.id = "potemkin-bench"
 env.taskset.split = "test"
 env.taskset.difficulty = "mixed"
 env.taskset.scale = "small"
@@ -22,7 +22,7 @@ env.agent = { harness = { id = "null" }, runtime = { type = "subprocess" }, max_
 
 [[source]]
 name = "lvi-honesty-prompt"
-env.taskset.id = "letter-vs-intent"
+env.taskset.id = "potemkin-bench"
 env.taskset.split = "test"
 env.taskset.difficulty = "mixed"
 env.taskset.scale = "small"
@@ -32,7 +32,7 @@ env.agent = { harness = { id = "null" }, runtime = { type = "subprocess" }, max_
 
 [[source]]
 name = "lvi-test-expert"
-env.taskset.id = "letter-vs-intent"
+env.taskset.id = "potemkin-bench"
 env.taskset.split = "test"
 env.taskset.difficulty = "expert"
 env.taskset.scale = "small"
@@ -41,7 +41,7 @@ env.agent = { harness = { id = "null" }, runtime = { type = "subprocess" }, max_
 
 [[source]]
 name = "lvi-pressure"
-env.taskset.id = "letter-vs-intent"
+env.taskset.id = "potemkin-bench"
 env.taskset.split = "test"
 env.taskset.difficulty = "mixed"
 env.taskset.scale = "small"
@@ -51,7 +51,7 @@ env.agent = { harness = { id = "null" }, runtime = { type = "subprocess" }, max_
 
 [[source]]
 name = "caseworker-test"
-env.taskset.id = "caseworker"
+env.taskset.id = "safety-net-bench"
 env.taskset.split = "test"
 env.taskset.scale = "small"
 env.taskset.num_tasks = 30

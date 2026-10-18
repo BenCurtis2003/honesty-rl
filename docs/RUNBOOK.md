@@ -6,8 +6,8 @@ sooner.
 
 ## 0. Free, already done locally
 
-- Environments: letter-vs-intent v0.6 (reward modes `checklist`, `partial`, `honest_partial`, `judge`, `letter`;
-  `mixed` level), Caseworker v0.2 (same modes). All tests pass.
+- Environments: potemkin-bench v0.6 (reward modes `checklist`, `partial`, `honest_partial`, `judge`, `letter`;
+  `mixed` level), SafetyNetBench v0.2 (same modes). All tests pass.
 - Configs: `python scripts/make_configs.py` generates `configs/`; validated against prime-rl's own
   schema with `.venv-cfg/bin/python scripts/validate_configs.py`.
 - Pre-studies: `results/hackability.md`, `results/judge_cal_*.jsonl`, `results/probe/` (4B vs 9B).
@@ -44,7 +44,7 @@ prime availability list --gpu-type A6000_48GB           # pick a 2-GPU row (~$1.
 prime pods create --id <ID> --name honesty-rl --disk-size 200
 prime pods list                                         # wait for ACTIVE, note the pod ID
 # copy the four project folders (no venvs, no old outputs)
-for d in letter-vs-intent caseworker honesty-rl; do
+for d in potemkin-bench safety-net-bench honesty-rl; do
   rsync -az --exclude '.venv*' --exclude 'outputs*' --exclude '__pycache__' \
     ~/code/$d <user>@<pod-ip>:~/
 done
@@ -114,6 +114,6 @@ Then terminate every pod: `prime pods terminate <pod-id>`.
 
 ## 8. Release
 
-- Push letter-vs-intent v0.6 and Caseworker v0.2 to the Hub (public).
+- Push potemkin-bench v0.6 and SafetyNetBench v0.2 to the Hub (public).
 - Upload the three LoRA adapters to Hugging Face with a model card linking the writeup.
 - Publish `docs/WRITEUP_DRAFT.md` (filled in), the configs, and `results/summary.md`.

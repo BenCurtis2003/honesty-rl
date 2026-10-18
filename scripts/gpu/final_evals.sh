@@ -40,7 +40,7 @@ for NAME in "$@"; do
   echo "=== $NAME (served as $SERVE)"
   # One run per eval source -> results/<model>/<source>/ (sources share task-id formats).
   # 2nd-seed adapters only need the sources the primary tests use.
-  # Budget run 2: the sources that carry the hypotheses. Caseworker was 0% for the 4B at step 0 and 40
+  # Budget run 2: the sources that carry the hypotheses. SafetyNetBench was 0% for the 4B at step 0 and 40
   # (uninformative); expert/pressure dropped. The honesty-prompt baseline is only needed for the base model.
   SRCS="/tmp/evalcfg/eval_src_lvi-test-mixed.toml /tmp/evalcfg/eval_src_ifeval.toml"
   [ "$NAME" = base ] && SRCS="$SRCS /tmp/evalcfg/eval_src_lvi-honesty-prompt.toml"

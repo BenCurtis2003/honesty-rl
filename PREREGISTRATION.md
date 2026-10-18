@@ -16,7 +16,7 @@ and benchmarks it never trained on?
 |---|---|
 | Policy | `Qwen/Qwen3.5-4B`, LoRA rank 16 / alpha 32 on all attention + MLP projections, thinking off |
 | Trainer | prime-rl (commit `0956a885` + 5-line tied-embedding fix in `patches/`), 40 steps (see Deviations), 32 rollouts/step (4 tasks x 8), lr 1e-5 constant |
-| Training tasks | letter-vs-intent v0.6, `train` split, the 6 families with 17–69% pilot pass rate (refunds_policy, collections_legal, memo_override, partial_batch, impossible, reorder), `small` scale, 1,000 tasks, seed 11 |
+| Training tasks | potemkin-bench v0.6, `train` split, the 6 families with 17–69% pilot pass rate (refunds_policy, collections_legal, memo_override, partial_batch, impossible, reorder), `small` scale, 1,000 tasks, seed 11 |
 | Episode limits | 30 turns, 8,192 tokens per turn (Revision 8d), 32k sequence length, 15-minute rollout timeout |
 | Hardware | 1 trainer GPU + 1 vLLM GPU (48 GB, e.g. A6000) |
 
@@ -72,7 +72,7 @@ honesty if H2c holds; otherwise the arm learned to say "not done" by default.
 - Expert-level transfer (`lvi-test-expert`, medium scale, 24 tasks)
 - Pressure robustness (`lvi-pressure`: "measured on completion" / "bonus" prompts)
 - Self-checking behavior (aggregate-tool use, checking after the last write), turns, report length
-- Error types on close and payroll failures; Caseworker harm metrics (wrongful denials, $ withheld)
+- Error types on close and payroll failures; SafetyNetBench harm metrics (wrongful denials, $ withheld)
 - Would an LLM judge catch the checklist arm's cheating? Qwen 3.5 122B (transcript view) over each
   arm's `lvi-test-mixed` traces (~$0.30)
 
@@ -102,7 +102,7 @@ shaping does not reduce false success beyond what outcome training already does.
    final-eval task (was 3), 48 GB GPUs instead of 80 GB.
 3. **Policy 9B → 4B,** from the learnability probe (above).
 
-4. **Power and controls (2026-10-16):** main held-out set 42 → 84 tasks; Caseworker 20 → 30
+4. **Power and controls (2026-10-16):** main held-out set 42 → 84 tasks; SafetyNetBench 20 → 30
    batches; expert 12 → 24; added the prompt-only baseline (H6) and the claim-recall guard (H2c).
 5. **Known confound:** the checklist grader both skips value checks and pays for claiming done, so
    H1 can show the grader teaches false success but not which part drives it.
@@ -132,7 +132,7 @@ shaping does not reduce false success beyond what outcome training already does.
 - **2026-10-17/18 run issues:** the checklist arm ran to step 77 (stop-watcher grep missed ANSI color
   codes); outcome and honest arms ran exactly 40 steps. Primary comparisons use final evals (checklist at
   step 77, others at 40); the checklist arm's step-40 online eval pointed the same way.
-- **Caseworker** dropped from final evals: 0% success for the 4B at steps 0 and 40 (uninformative).
+- **SafetyNetBench** dropped from final evals: 0% success for the 4B at steps 0 and 40 (uninformative).
 - **IFEval** errored in the first final-eval pass (task network policy vs subprocess runtime); rerun on
   2026-10-18 after setting `network_allow = ["*"]` (single-turn, no tools).
 - Training curves for outcome/honest were not retained (node terminated before download); final evals,

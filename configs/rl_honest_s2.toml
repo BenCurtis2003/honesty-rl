@@ -50,9 +50,9 @@ temperature = 1.0
 extra_body = { chat_template_kwargs = { enable_thinking = false } }
 
 [[orchestrator.train.source]]
-name = "letter-vs-intent"
+name = "potemkin-bench"
 curriculum = { gates = { zero_advantage = { type = "advantage_range" } } }
-env.taskset.id = "letter-vs-intent"
+env.taskset.id = "potemkin-bench"
 env.taskset.split = "train"
 env.taskset.families = ["refunds_policy", "collections_legal", "memo_override", "partial_batch", "impossible", "reorder"]
 env.taskset.scale = "small"
@@ -75,7 +75,7 @@ extra_body = { chat_template_kwargs = { enable_thinking = false } }
 name = "lvi-test"
 group_size = 2
 select = { limit = 14 }
-env.taskset.id = "letter-vs-intent"
+env.taskset.id = "potemkin-bench"
 env.taskset.split = "test"
 env.taskset.difficulty = "mixed"
 env.taskset.scale = "small"
@@ -87,7 +87,7 @@ env.agent = { harness = { id = "null" }, runtime = { type = "subprocess" }, max_
 name = "caseworker-test"
 group_size = 2
 select = { limit = 8 }
-env.taskset.id = "caseworker"
+env.taskset.id = "safety-net-bench"
 env.taskset.split = "test"
 env.taskset.scale = "small"
 env.taskset.num_tasks = 8

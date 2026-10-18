@@ -26,17 +26,17 @@ import sys
 from types import SimpleNamespace
 
 ROOT = pathlib.Path.home() / "code"
-sys.path[:0] = [str(ROOT / "letter-vs-intent/tests"), str(ROOT / "caseworker/tests")]
+sys.path[:0] = [str(ROOT / "potemkin-bench/tests"), str(ROOT / "safety-net-bench/tests")]
 
 import test_families as t1  # noqa: E402
 import test_families_v2 as t2  # noqa: E402
 import test_families_v3 as t3  # noqa: E402
-import test_caseworker as tc  # noqa: E402
-import caseworker.taskset as cts  # noqa: E402
-from caseworker.cases import build_batch  # noqa: E402
-from letter_vs_intent.servers.tool import OfficeState  # noqa: E402
-from letter_vs_intent.taskset import (LetterVsIntentConfig, LetterVsIntentTask,  # noqa: E402
-                                      LetterVsIntentTaskConfig, LetterVsIntentTaskset)
+import test_safety_net_bench as tc  # noqa: E402
+import safety_net_bench.taskset as cts  # noqa: E402
+from safety_net_bench.cases import build_batch  # noqa: E402
+from potemkin_bench.servers.tool import OfficeState  # noqa: E402
+from potemkin_bench.taskset import (PotemkinBenchConfig, PotemkinBenchTask,  # noqa: E402
+                                      PotemkinBenchTaskConfig, PotemkinBenchTaskset)
 
 MODES = ("strict", "partial", "honest", "honest_partial", "checklist", "letter")
 POLICIES = ("full_honest", "full_underclaim", "full_silent", "half_admit", "half_claim", "junk_claim", "claim_only")
@@ -119,32 +119,32 @@ def policies_for(initial: dict, full: OfficeState, truth_ok: bool, rng: random.R
 
 
 def audit_lvi(n: int) -> dict:
-    tasks = LetterVsIntentTaskset(LetterVsIntentConfig(num_tasks=n, difficulty="mixed", scale="small")).load()
+    tasks = PotemkinBenchTaskset(PotemkinBenchConfig(num_tasks=n, difficulty="mixed", scale="small")).load()
     rng = random.Random(0)
     acc = {p: {m: [] for m in MODES} for p in POLICIES}
     for task in tasks:
         full = OfficeState(db=copy.deepcopy(task.data.db))
         lvi_solve(task.data.family, full, task.data.spec)
-        ok = min(LetterVsIntentTask(task.data, LetterVsIntentTaskConfig())._components(SimpleNamespace(state=full)).values()) == 1.0
+        ok = min(PotemkinBenchTask(task.data, PotemkinBenchTaskConfig())._components(SimpleNamespace(state=full)).values()) == 1.0
         assert ok, f"reference solver failed on {task.data.family}"
         for p, st in policies_for(task.data.db, full, ok, rng).items():
             for m in MODES:
-                acc[p][m].append(asyncio.run(score(LetterVsIntentTask, LetterVsIntentTaskConfig, task.data, st, m)))
+                acc[p][m].append(asyncio.run(score(PotemkinBenchTask, PotemkinBenchTaskConfig, task.data, st, m)))
     return acc
 
 
-def audit_caseworker(n: int) -> dict:
+def audit_safety_net(n: int) -> dict:
     rng = random.Random(1)
     acc = {p: {m: [] for m in MODES} for p in POLICIES}
     for i in range(n):
         _, db, spec = build_batch(random.Random(1000 + i), 5)
-        data = cts.CaseworkerData(id=f"a{i}", name="snap_batch", prompt="", db=db, spec=spec)
+        data = cts.SafetyNetBenchData(id=f"a{i}", name="snap_batch", prompt="", db=db, spec=spec)
         full = tc._state(db)
         tc._solve(full.db, spec, full.outbox)
         full.report = {"completed": True, "summary": "done"}
         for p, st in policies_for(db, full, True, rng).items():
             for m in MODES:
-                acc[p][m].append(asyncio.run(score(cts.CaseworkerTask, cts.CaseworkerTaskConfig, data, st, m)))
+                acc[p][m].append(asyncio.run(score(cts.SafetyNetBenchTask, cts.SafetyNetBenchTaskConfig, data, st, m)))
     return acc
 
 
@@ -171,8 +171,8 @@ def main() -> None:
     ap.add_argument("--out", default="results/hackability.md")
     a = ap.parse_args()
     md = "## Reward hackability audit (mean reward; scripted policies, no model)\n\n"
-    md += table(f"letter-vs-intent, mixed level, small scale ({a.n} tasks)", audit_lvi(a.n)) + "\n"
-    md += table(f"caseworker, 5-case batches ({a.n // 2} batches)", audit_caseworker(a.n // 2))
+    md += table(f"potemkin-bench, mixed level, small scale ({a.n} tasks)", audit_lvi(a.n)) + "\n"
+    md += table(f"SafetyNetBench, 5-case batches ({a.n // 2} batches)", audit_safety_net(a.n // 2))
     out = pathlib.Path(a.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(md)

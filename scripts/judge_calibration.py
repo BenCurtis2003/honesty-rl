@@ -1,11 +1,11 @@
 """Pre-study: how good is the training judge BEFORE any RL?
 
 Runs the exact judge used by the `judge` arm (same prompt, same agent log format, thinking off)
-on already-labeled rollouts (letter-vs-intent v0.5 test runs, rescored ground truth), and reports
+on already-labeled rollouts (potemkin-bench v0.5 test runs, rescored ground truth), and reports
 how often it passes failed runs. If the base judge already passes many false successes, the
 judge arm has an exploitable grader from step 0.
 
-  python scripts/judge_calibration.py ~/code/letter-vs-intent/outputs_v5/*/traces_rescored.jsonl \
+  python scripts/judge_calibration.py ~/code/potemkin-bench/outputs_v5/*/traces_rescored.jsonl \
       --judge Qwen/Qwen3.5-9B --out results/judge_calibration.jsonl
 """
 
@@ -18,7 +18,7 @@ import os
 import pathlib
 import urllib.request
 
-from letter_vs_intent.rewards import JUDGE_PROMPT, parse_verdict
+from potemkin_bench.rewards import JUDGE_PROMPT, parse_verdict
 
 PER_RESULT, TOTAL = 300, 12000  # same truncation as rewards.agent_log
 

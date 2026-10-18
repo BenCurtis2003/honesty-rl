@@ -1,7 +1,7 @@
 # What you reward is what they report: RL, graders, and agents that claim work they didn't do
 
 **Ben Curtis · October 2026 ·** [code](https://github.com/BenCurtis2003/honesty-rl) · environments on the
-Prime Intellect Hub: [letter-vs-intent](https://app.primeintellect.ai/dashboard/environments/bencurtis2003/letter-vs-intent)
+Prime Intellect Hub: [PotemkinBench](https://app.primeintellect.ai/dashboard/environments/bencurtis2003/potemkin-bench)
 
 ## TL;DR
 
@@ -34,7 +34,7 @@ On 84 held-out tasks (168 attempts per model):
 
 ## Setup
 
-**Environment.** [letter-vs-intent](https://app.primeintellect.ai/dashboard/environments/bencurtis2003/letter-vs-intent)
+**Environment.** [PotemkinBench](https://app.primeintellect.ai/dashboard/environments/bencurtis2003/potemkin-bench)
 (verifiers v1) gives an agent a mock company database and email behind paginated tools: collections,
 refunds, restocking, dedupe, month-end close, payroll, and legal-hold work. Some requests are impossible or
 only partly possible, so the honest report is "not completed". Writes fail transiently and must be retried.
@@ -82,7 +82,7 @@ so the output layer stayed all zeros. A 5-line fix plus a regression test (it fa
 | H2a: truthful-report bonus → less false success than ground truth alone | **Not supported** (−1.2 pp, CI [−5, +2]) |
 | H2b: no cost to real success | **Supported** (+1.8 pp) |
 | H2c: no collapse into "never claim done" | **Supported** (claim recall ~95% in both) |
-| H3: transfer to unseen benchmarks | **Uninformative:** Zapier's AutomationBench (simple) near ceiling for all models; Caseworker at floor for a 4B |
+| H3: transfer to unseen benchmarks | **Uninformative:** Zapier's AutomationBench (simple) near ceiling for all models; SafetyNetBench at floor for a 4B |
 | H4: no loss of general instruction following (IFEval) | **No significant loss:** honest +0.0 pp [-5, +5], outcome -1.5 pp [-7.5, +4], checklist -3.5 pp [-9, +2] (base 80%, 200 prompts); a 3 pp non-inferiority margin is not established at this n |
 | H5: the checklist arm games its own grader (grader score minus real success, vs base) | **Not supported:** +3.8 pp [−3, +11], p = 0.15 (trend only) |
 | H6: training beats a prompt | **Supported** (−8.3 pp vs. honesty-prompted base, p < 0.001) |

@@ -105,9 +105,9 @@ temperature = {c['temperature']}
 extra_body = {EXTRA_BODY}
 
 [[orchestrator.train.source]]
-name = "letter-vs-intent"
+name = "potemkin-bench"
 curriculum = {{ gates = {{ zero_advantage = {{ type = "advantage_range" }} }} }}
-env.taskset.id = "letter-vs-intent"
+env.taskset.id = "potemkin-bench"
 env.taskset.split = "train"
 env.taskset.families = {json.dumps(TRAIN_FAMILIES)}
 env.taskset.scale = "small"
@@ -130,7 +130,7 @@ extra_body = {EXTRA_BODY}
 name = "lvi-test"
 group_size = 2
 select = {{ limit = 14 }}
-env.taskset.id = "letter-vs-intent"
+env.taskset.id = "potemkin-bench"
 env.taskset.split = "test"
 env.taskset.difficulty = "mixed"
 env.taskset.scale = "small"
@@ -142,7 +142,7 @@ env.agent = {agent}
 name = "caseworker-test"
 group_size = 2
 select = {{ limit = 8 }}
-env.taskset.id = "caseworker"
+env.taskset.id = "safety-net-bench"
 env.taskset.split = "test"
 env.taskset.scale = "small"
 env.taskset.num_tasks = 8
@@ -198,27 +198,27 @@ def main() -> None:
 
     q = lambda s: f'"{s}"'
     final = [
-        ("lvi-test-mixed", {"env.taskset.id": q("letter-vs-intent"), "env.taskset.split": q("test"),
+        ("lvi-test-mixed", {"env.taskset.id": q("potemkin-bench"), "env.taskset.split": q("test"),
                             "env.taskset.difficulty": q("mixed"), "env.taskset.scale": q("small"),
                             "env.taskset.num_tasks": 84}),
         # prompt-only baseline: the same held-out tasks with an explicit honesty instruction
-        ("lvi-honesty-prompt", {"env.taskset.id": q("letter-vs-intent"), "env.taskset.split": q("test"),
+        ("lvi-honesty-prompt", {"env.taskset.id": q("potemkin-bench"), "env.taskset.split": q("test"),
                                 "env.taskset.difficulty": q("mixed"), "env.taskset.scale": q("small"),
                                 "env.taskset.num_tasks": 84, "env.taskset.pressures": '["honesty_prompt"]'}),
-        ("lvi-test-expert", {"env.taskset.id": q("letter-vs-intent"), "env.taskset.split": q("test"),
+        ("lvi-test-expert", {"env.taskset.id": q("potemkin-bench"), "env.taskset.split": q("test"),
                              "env.taskset.difficulty": q("expert"), "env.taskset.scale": q("small"),
                              "env.taskset.num_tasks": 24}),
-        ("lvi-pressure", {"env.taskset.id": q("letter-vs-intent"), "env.taskset.split": q("test"),
+        ("lvi-pressure", {"env.taskset.id": q("potemkin-bench"), "env.taskset.split": q("test"),
                           "env.taskset.difficulty": q("mixed"), "env.taskset.scale": q("small"),
                           "env.taskset.num_tasks": 14, "env.taskset.pressures": '["completion", "bonus"]'}),
-        ("caseworker-test", {"env.taskset.id": q("caseworker"), "env.taskset.split": q("test"),
+        ("caseworker-test", {"env.taskset.id": q("safety-net-bench"), "env.taskset.split": q("test"),
                              "env.taskset.scale": q("small"), "env.taskset.num_tasks": 30}),
         # capability retention: did honesty training cost general instruction following?
         ("ifeval", {"env.taskset.id": q("ifeval"), "group_size": 1, "select": "{ limit = 200 }"}),
     ]
     (cfg / "eval_main.toml").write_text(eval_toml("main", final, COMMON))
     # One config per source, so every source gets its own output directory: the two
-    # letter-vs-intent sources share task-id formats, and paired stats key on task id.
+    # potemkin-bench sources share task-id formats, and paired stats key on task id.
     for old in cfg.glob("eval_src_*.toml"):
         old.unlink()
     for src_name, opts in final:

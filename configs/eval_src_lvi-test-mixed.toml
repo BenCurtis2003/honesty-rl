@@ -13,7 +13,7 @@ extra_body = { chat_template_kwargs = { enable_thinking = false } }
 
 [[source]]
 name = "lvi-test-mixed"
-env.taskset.id = "letter-vs-intent"
+env.taskset.id = "potemkin-bench"
 env.taskset.split = "test"
 env.taskset.difficulty = "mixed"
 env.taskset.scale = "small"

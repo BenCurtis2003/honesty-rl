@@ -14,7 +14,7 @@ tasks (including 8 task families never trained on), Zapier's third-party Automat
 
 | Eval | What it tests |
 |---|---|
-| letter-vs-intent `test` (all 14 families; 84 tasks x 2) | Held-out tasks, incl. 8 families never trained on |
+| potemkin-bench `test` (all 14 families; 84 tasks x 2) | Held-out tasks, incl. 8 families never trained on |
 | Same tasks + an explicit honesty instruction (base model) | Does prompting alone do it? |
 | AutomationBench (Zapier, `simple`) + self-report wrapper | Unseen third-party benchmark |
 | IFEval (200 prompts) | General ability didn't regress |
@@ -56,7 +56,7 @@ small Qwen 3.5 checkpoints on all-zero logits.
 | `results/` | Final eval traces, summary tables, figure, pre-study data |
 | `patches/` | prime-rl fix for Qwen 3.5 tied embeddings |
 
-Environments live in their own repos: [letter-vs-intent](https://github.com/BenCurtis2003/letter-vs-intent)
-(v0.6) and [caseworker](https://github.com/BenCurtis2003/caseworker) (v0.2; at 0% for a 4B model, so it was
+Environments live in their own repos: [PotemkinBench](https://github.com/BenCurtis2003/potemkin-bench)
+(v0.7, formerly letter-vs-intent) and [SafetyNetBench](https://github.com/BenCurtis2003/safety-net-bench) (v0.3, formerly caseworker; at 0% for a 4B model, so it was
 dropped from the final evals).
 All data is synthetic.

@@ -1,6 +1,6 @@
 ## Reward hackability audit (mean reward; scripted policies, no model)
 
-### letter-vs-intent, mixed level, small scale (70 tasks)
+### potemkin-bench, mixed level, small scale (70 tasks)
 
 | policy | strict | partial | honest | honest_partial | checklist | letter |
 |---|---|---|---|---|---|---|

@@ -9,13 +9,13 @@ DONE_FILE=${DONE_FILE:-}  # optional: remote file whose existence means "finishe
 TO() { perl -e 'alarm shift; exec @ARGV' "$@"; }   # macOS has no `timeout`
 export PRIME_DISABLE_VERSION_CHECK=1
 while true; do
-  BAL=$(prime --plain wallet 2>/dev/null | sed -n 's/.*Balance: *\$\([0-9.]*\).*/\1/p' | head -1)
+  BAL=$(TO 60 prime --plain wallet 2>/dev/null | sed -n 's/.*Balance: *\$\([0-9.]*\).*/\1/p' | head -1)
   if [ -n "$DONE_FILE" ]; then
     DONE=$(TO 60 $SSH $HOST "test -f $DONE_FILE && echo 1 || echo 0" 2>/dev/null)
   else
     DONE=$(TO 60 $SSH $HOST 'grep -c "=== .* all done" ~/runs/run_all.log 2>/dev/null' 2>/dev/null)
   fi
-  NPODS=$(prime --plain pods list 2>/dev/null | grep -c ACTIVE)
+  NPODS=$(TO 60 prime --plain pods list 2>/dev/null | grep -c ACTIVE)
   [ "${NPODS:-0}" -gt 1 ] && echo "WARNING: $NPODS active pods (expected 1)"
   echo "$(date -u +%F' '%T) balance=\$$BAL floor=\$$FLOOR done=${DONE:-?}"
   if [ -n "$BAL" ] && awk "BEGIN{exit !($BAL < $FLOOR)}"; then
@@ -30,7 +30,8 @@ while true; do
     echo "run finished -> downloading results, then terminating pod"
     if [ "$DRY" = "--dry-run" ]; then exit 0; fi
     if [ -n "$DONE_FILE" ]; then
-      rsync -az -e "$SSH" --include="*/" --include="ifeval/**" --exclude="*" $HOST:~/honesty-rl/results/ ~/code/honesty-rl/results/ifeval_run/ \
+      PULL=${PULL_INCLUDE:-ifeval/**}; DEST=${PULL_DEST:-ifeval_run}
+      TO 1800 rsync -az -e "$SSH" --include="*/" --include="$PULL" --exclude="*" $HOST:~/honesty-rl/results/ ~/code/honesty-rl/results/$DEST/ \
         && prime --plain pods terminate $POD --yes; exit 0
     fi
     rsync -az -e "$SSH" $HOST:~/honesty-rl/results/ ~/code/honesty-rl/results/ && \

@@ -1,6 +1,6 @@
 # Results (run 2026-10-17/18): Qwen 3.5 4B, LoRA, 3 arms
 
-Held-out test: letter-vs-intent `test` split, all 14 task families (6 trained, 8 never trained on),
+Held-out test: potemkin-bench `test` split, all 14 task families (6 trained, 8 never trained on),
 84 tasks x 2 attempts = 168 per model. 95% CIs: task-level paired bootstrap. Full tables:
 `results/summary_final.md`. Training: 40 steps for outcome and honest; the checklist arm ran 77 steps
 (a stop-watcher bug; see PREREGISTRATION deviations). Its step-40 online eval showed the same direction.
@@ -21,7 +21,7 @@ Held-out test: letter-vs-intent `test` split, all 14 task families (6 trained, 8
 | **H2a** honest < outcome in false success | **Not supported:** -1.2 pp [-5, +2]; both arms already cut false success ~4x vs base |
 | **H2b** honest not worse on real success (> -5 pp) | **Supported:** +1.8 pp [-2, +6] |
 | **H2c** no collapse into "never claim done" (> -10 pp) | **Supported:** claim recall +1.9 pp [0, +6]; both ~95% |
-| **H3** transfer to unseen benchmarks | **Uninformative:** AutomationBench `simple` near ceiling for all (88-90%), no differences; Caseworker at 0% for the 4B (dropped) |
+| **H3** transfer to unseen benchmarks | **Uninformative:** AutomationBench `simple` near ceiling for all (88-90%), no differences; SafetyNetBench at 0% for the 4B (dropped) |
 | **H4** IFEval retention | **No significant loss:** honest +0.0 pp [-5, +5], outcome -1.5 pp [-7.5, +4], checklist -3.5 pp [-9, +2] (base 80%, 200 prompts); a 3 pp non-inferiority margin is not established at this n |
 | **H5** checklist arm games its grader (grader score - real success, vs base) | **Not supported:** +3.8 pp [-3, +11], p = 0.15 (trend) |
 | **H6** training beats asking | **Supported:** honest arm vs base + honesty prompt: false success -8.3 pp [-14, -4], p < 0.001 |
@@ -42,5 +42,5 @@ One-sided task-level bootstrap tests. H1 remains significant after the preregist
 ## Caveats
 
 One seed per arm, 4B model, synthetic tasks, short training. The checklist arm trained longer
-(77 vs 40 steps). AutomationBench near ceiling and Caseworker at floor, so transfer claims are limited. IFEval was rerun
+(77 vs 40 steps). AutomationBench near ceiling and SafetyNetBench at floor, so transfer claims are limited. IFEval was rerun
 separately (2026-10-18) after fixing an eval-config error (network policy vs subprocess runtime).

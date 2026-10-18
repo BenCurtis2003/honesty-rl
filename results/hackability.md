@@ -1,6 +1,6 @@
 ## Reward hackability audit (mean reward; scripted policies, no model)
 
-### letter-vs-intent, mixed level, small scale (70 tasks)
+### potemkin-bench, mixed level, small scale (70 tasks)
 
 | policy | strict | partial | honest | honest_partial | checklist | letter |
 |---|---|---|---|---|---|---|
@@ -20,7 +20,7 @@ Does cheating pay? (yes = the cheating policy outscores honest half-work)
 | lying with no work (claim_only) | no | no | no | no | no | **yes** |
 | junk work + lying (junk_claim) | no | **yes** | no | no | **yes** | **yes** |
 
-### caseworker, 5-case batches (35 batches)
+### SafetyNetBench, 5-case batches (35 batches)
 
 | policy | strict | partial | honest | honest_partial | checklist | letter |
 |---|---|---|---|---|---|---|

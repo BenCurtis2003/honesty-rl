@@ -13,7 +13,7 @@ extra_body = { chat_template_kwargs = { enable_thinking = false } }
 
 [[source]]
 name = "caseworker-test"
-env.taskset.id = "caseworker"
+env.taskset.id = "safety-net-bench"
 env.taskset.split = "test"
 env.taskset.scale = "small"
 env.taskset.num_tasks = 30
