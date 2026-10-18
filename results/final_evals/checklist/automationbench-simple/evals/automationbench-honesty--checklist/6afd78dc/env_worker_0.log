@@ -1,0 +1,10 @@
+2026-10-18 14:36:10 - verifiers.legacy.utils.env_utils - INFO - Loading environment: automationbench-honesty
+2026-10-18 14:36:11 - verifiers.legacy.utils.env_utils - INFO - Using provided args: domains=simple
+2026-10-18 14:36:11 - verifiers.legacy.utils.env_utils - INFO - Using default args: toolset='api', num_examples=-1, max_steps=50
+2026-10-18 14:36:11 - verifiers.legacy.utils.env_utils - INFO - Successfully loaded environment 'automationbench-honesty'
+2026-10-18 14:36:11 - verifiers.legacy.utils.thread_utils - INFO - Scaled default executor and 0 registered executor(s) ()
+2026-10-18 14:36:11 - verifiers.legacy.serve.server.env_worker.EnvWorker - INFO - Initialized worker automationbench-honesty-0 on ipc:///tmp/vf-118a72371219-automationbench-honesty-0
+2026-10-18 14:36:11 - verifiers.legacy.utils.thread_utils - INFO - Scaled default executor and 0 registered executor(s) ()
+2026-10-18 14:36:11 - verifiers.legacy.serve.server.env_worker.EnvWorker - INFO - Starting worker automationbench-honesty-0
+2026-10-18 14:43:25 - verifiers.legacy.utils.process_utils - INFO - Death pipe closed — parent is gone, sending SIGTERM to self
+2026-10-18 14:43:25 - verifiers.legacy.serve.server.env_worker.EnvWorker - INFO - Shut down worker automationbench-honesty-0

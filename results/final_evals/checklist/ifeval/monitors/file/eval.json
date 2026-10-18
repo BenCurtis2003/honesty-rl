@@ -1,0 +1,204 @@
+{
+  "env": {
+    "taskset": {
+      "task": {
+        "judges": [],
+        "stops": {},
+        "metrics": {},
+        "rewards": {}
+      },
+      "system_prompt": null
+    },
+    "timeout": {
+      "episode": null,
+      "finalize": null
+    },
+    "retries": {
+      "max_retries": 0,
+      "rules": []
+    },
+    "max_concurrent_agents": 1,
+    "interception": {
+      "type": "elastic",
+      "multiplex": 32
+    }
+  },
+  "source": [
+    {
+      "env": {
+        "taskset": {
+          "task": {
+            "judges": [],
+            "stops": {},
+            "metrics": {},
+            "rewards": {},
+            "mode": "strict"
+          },
+          "system_prompt": null,
+          "id": "ifeval"
+        },
+        "timeout": {
+          "episode": null,
+          "finalize": null
+        },
+        "retries": {
+          "max_retries": 0,
+          "rules": []
+        },
+        "max_concurrent_agents": 1,
+        "interception": {
+          "type": "elastic",
+          "multiplex": 32
+        },
+        "id": "",
+        "agent": {
+          "harness": {
+            "id": "null",
+            "env": {},
+            "forward_env": [],
+            "mcp_header_env": {},
+            "tool_timeout": 600.0,
+            "disabled_tools": null,
+            "skills": []
+          },
+          "runtime": {
+            "type": "subprocess"
+          },
+          "model": null,
+          "client": null,
+          "sampling": null,
+          "max_turns": 30,
+          "max_input_tokens": null,
+          "max_output_tokens": null,
+          "max_total_tokens": null,
+          "timeout": {
+            "setup": null,
+            "rollout": 900.0,
+            "finalize": null,
+            "scoring": null
+          },
+          "retries": {
+            "max_retries": 0,
+            "rules": []
+          },
+          "network_notice": true
+        }
+      },
+      "serve": {
+        "pool": {
+          "type": "elastic",
+          "max_workers": null,
+          "multiplex": 128
+        },
+        "address": null,
+        "max_concurrent": null
+      },
+      "name": "ifeval",
+      "select": {
+        "include": {
+          "idx": [],
+          "ids": [],
+          "keys": [],
+          "names": []
+        },
+        "exclude": {
+          "idx": [],
+          "ids": [],
+          "keys": [],
+          "names": []
+        },
+        "shuffle": false,
+        "seed": 0,
+        "skip": 0,
+        "limit": 200
+      },
+      "sampling": {
+        "temperature": 0.7,
+        "top_p": null,
+        "reasoning_effort": null,
+        "max_tokens": 8192,
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        }
+      },
+      "group_size": 1
+    }
+  ],
+  "sampling": {
+    "temperature": 0.7,
+    "top_p": null,
+    "reasoning_effort": null,
+    "max_tokens": 8192,
+    "chat_template_kwargs": {
+      "enable_thinking": false
+    }
+  },
+  "select": {
+    "include": {
+      "idx": [],
+      "ids": [],
+      "keys": [],
+      "names": []
+    },
+    "exclude": {
+      "idx": [],
+      "ids": [],
+      "keys": [],
+      "names": []
+    },
+    "shuffle": false,
+    "seed": 0,
+    "skip": 0,
+    "limit": null
+  },
+  "group_size": 2,
+  "client": {
+    "base_url": "http://localhost:8000/v1",
+    "api_key_var": "PRIME_API_KEY",
+    "headers": {},
+    "headers_from_env": {},
+    "timeout": {
+      "connect": 30.0,
+      "read": null,
+      "write": null,
+      "pool": null
+    },
+    "wait_for_ready_timeout": 3600,
+    "skip_model_check": false,
+    "admin_base_url": null
+  },
+  "concurrency": {
+    "initial_inflight": null,
+    "min_inflight": 128,
+    "max_inflight": 128
+  },
+  "dispatch_per_minute": null,
+  "heartbeat": null,
+  "model": "checklist",
+  "run": {
+    "name": "final-checklist-ifeval",
+    "dir": "final-checklist-ifeval"
+  },
+  "output_dir": "/root/runs",
+  "clean": false,
+  "dry_run": false,
+  "dashboard": true,
+  "resume": null,
+  "log": {
+    "level": "info",
+    "vf_level": "info",
+    "json_logging": false,
+    "log_data": false,
+    "interval": 10.0
+  },
+  "monitors": {
+    "wandb": null,
+    "file": {
+      "path": "metrics.jsonl",
+      "chunk_bytes": 5368709120,
+      "compress": true,
+      "float_decimals": 4
+    },
+    "prime": null
+  }
+}
