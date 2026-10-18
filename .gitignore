@@ -1,7 +1,6 @@
 .venv*/
 __pycache__/
 *.egg-info/
-results/plots/
 results/runs/
 results/final_evals/**/live/
 results/ifeval_run/**/traces/
