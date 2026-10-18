@@ -36,7 +36,8 @@ neither (+12.5 pp false success vs ground truth, p = 0.003); the extra honesty b
 measurable on top of ground truth. Writeup: [docs/WRITEUP.md](docs/WRITEUP.md) · tables:
 [results/RESULTS.md](results/RESULTS.md) · plan + deviations: [PREREGISTRATION.md](PREREGISTRATION.md).
 
-Along the way: a fix for prime-rl's Qwen 3.5 tied-embedding bug (`patches/`), which otherwise trains
+Along the way: a fix for prime-rl's Qwen 3.5 tied-embedding bug
+([PR #4144](https://github.com/PrimeIntellect-ai/prime-rl/pull/4144), `patches/`), which otherwise trains
 small Qwen 3.5 checkpoints on all-zero logits.
 
 ## Layout

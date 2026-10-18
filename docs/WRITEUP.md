@@ -71,7 +71,8 @@ The first pilot trained on noise: entropy was exactly ln(vocab size) = 12.42 and
 Small Qwen 3.5 checkpoints tie the output layer to the input embeddings and ship no `lm_head` weight.
 prime-rl's loader skips `lm_head.weight` for tied configs, but its Qwen 3.5 model class never tied them,
 so the output layer stayed all zeros. A 5-line fix plus a regression test (it fails on prime-rl's
-`main` and passes with the fix) is in [`patches/`](../patches/) and submitted upstream. After it: entropy 0.08, trainer–inference mismatch KL 0.0001.
+`main` and passes with the fix) is in [`patches/`](../patches/) and submitted upstream as
+[PrimeIntellect-ai/prime-rl#4144](https://github.com/PrimeIntellect-ai/prime-rl/pull/4144). After it: entropy 0.08, trainer–inference mismatch KL 0.0001.
 
 ## Preregistered hypotheses
 
