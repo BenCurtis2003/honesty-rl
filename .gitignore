@@ -4,7 +4,6 @@ __pycache__/
 results/runs/
 results/final_evals/**/live/
 results/ifeval_run/**/traces/
-results/probe/
 logs/
 *.tgz
 *.safetensors

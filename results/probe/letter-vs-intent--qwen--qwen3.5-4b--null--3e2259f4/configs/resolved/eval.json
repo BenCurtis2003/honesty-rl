@@ -1,0 +1,155 @@
+{
+  "env": {
+    "taskset": {
+      "task": {
+        "judges": [],
+        "stops": {},
+        "metrics": {},
+        "rewards": {},
+        "tools": {
+          "colocated": false,
+          "runtime": {
+            "type": "subprocess"
+          },
+          "url": null
+        },
+        "reward_mode": "strict",
+        "judge": {
+          "base_url": "https://api.pinference.ai/api/v1",
+          "api_key_var": "PRIME_API_KEY",
+          "headers": {},
+          "headers_from_env": {},
+          "timeout": {
+            "connect": 30.0,
+            "read": null,
+            "write": null,
+            "pool": null
+          },
+          "id": "",
+          "name": "",
+          "weight": 1.0,
+          "model": "openai/gpt-6-luna",
+          "sampling": {
+            "temperature": null,
+            "top_p": null,
+            "reasoning_effort": null,
+            "max_tokens": null
+          },
+          "prompt": null
+        },
+        "judge_metric": false
+      },
+      "system_prompt": null,
+      "id": "letter-vs-intent",
+      "num_tasks": 14,
+      "seed": 7,
+      "split": "test",
+      "difficulty": "mixed",
+      "scale": "small",
+      "pressures": [
+        "neutral"
+      ],
+      "families": null
+    },
+    "timeout": {
+      "episode": null,
+      "finalize": null
+    },
+    "retries": {
+      "max_retries": 0,
+      "rules": []
+    },
+    "max_concurrent_agents": 1,
+    "interception": {
+      "type": "elastic",
+      "multiplex": 32
+    },
+    "id": "",
+    "agent": {
+      "harness": {
+        "id": "null",
+        "env": {},
+        "forward_env": [],
+        "mcp_header_env": {},
+        "tool_timeout": 600.0,
+        "disabled_tools": null,
+        "skills": []
+      },
+      "runtime": {
+        "type": "subprocess"
+      },
+      "model": null,
+      "client": null,
+      "sampling": null,
+      "max_turns": 40,
+      "max_input_tokens": null,
+      "max_output_tokens": null,
+      "max_total_tokens": null,
+      "timeout": {
+        "setup": null,
+        "rollout": 1200.0,
+        "finalize": null,
+        "scoring": null
+      },
+      "retries": {
+        "max_retries": 0,
+        "rules": []
+      },
+      "network_notice": true
+    }
+  },
+  "run": {
+    "name": "letter-vs-intent--qwen--qwen3.5-4b--null--3e2259f4",
+    "dir": "letter-vs-intent--qwen--qwen3.5-4b--null--3e2259f4",
+    "attach": null
+  },
+  "model": "Qwen/Qwen3.5-4B",
+  "client": {
+    "base_url": "https://api.pinference.ai/api/v1",
+    "api_key_var": "PRIME_API_KEY",
+    "headers": {},
+    "headers_from_env": {},
+    "timeout": {
+      "connect": 30.0,
+      "read": null,
+      "write": null,
+      "pool": null
+    },
+    "type": "eval"
+  },
+  "sampling": {
+    "temperature": null,
+    "top_p": null,
+    "reasoning_effort": null,
+    "max_tokens": null,
+    "chat_template_kwargs": {
+      "enable_thinking": "false"
+    }
+  },
+  "select": {
+    "include": {
+      "idx": [],
+      "ids": [],
+      "keys": [],
+      "names": []
+    },
+    "exclude": {
+      "idx": [],
+      "ids": [],
+      "keys": [],
+      "names": []
+    },
+    "shuffle": false,
+    "seed": 0,
+    "skip": 0,
+    "limit": 14
+  },
+  "num_rollouts": 2,
+  "max_concurrent": 4,
+  "verbose": false,
+  "rich": {
+    "show_logs": false
+  },
+  "push": false,
+  "output_dir": "/Users/benjamincurtis/code/honesty-rl/results/probe"
+}
