@@ -42,8 +42,8 @@ for NAME in "$@"; do
   # 2nd-seed adapters only need the sources the primary tests use.
   # Budget run 2: the sources that carry the hypotheses. SafetyNetBench was 0% for the 4B at step 0 and 40
   # (uninformative); expert/pressure dropped. The honesty-prompt baseline is only needed for the base model.
-  SRCS="/tmp/evalcfg/eval_src_lvi-test-mixed.toml /tmp/evalcfg/eval_src_ifeval.toml"
-  [ "$NAME" = base ] && SRCS="$SRCS /tmp/evalcfg/eval_src_lvi-honesty-prompt.toml"
+  SRCS="/tmp/evalcfg/eval_src_potemkin-test-mixed.toml /tmp/evalcfg/eval_src_ifeval.toml"
+  [ "$NAME" = base ] && SRCS="$SRCS /tmp/evalcfg/eval_src_potemkin-honesty-prompt.toml"
   for f in $SRCS; do
     SRC=$(basename "$f" .toml); SRC=${SRC#eval_src_}
     uv run eval @ "$f" -m "$SERVE" --run.name "final-$NAME-$SRC" --output-dir ~/runs
