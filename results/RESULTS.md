@@ -23,7 +23,10 @@ Held-out test: letter-vs-intent `test` split, all 14 task families (6 trained, 8
 | **H2c** no collapse into "never claim done" (> -10 pp) | **Supported:** claim recall +1.9 pp [0, +6]; both ~95% |
 | **H3** transfer to unseen benchmarks | **Uninformative:** AutomationBench `simple` near ceiling for all (88-90%), no differences; Caseworker at 0% for the 4B (dropped) |
 | **H4** IFEval retention | **No significant loss:** honest +0.0 pp [-5, +5], outcome -1.5 pp [-7.5, +4], checklist -3.5 pp [-9, +2] (base 80%, 200 prompts); a 3 pp non-inferiority margin is not established at this n |
+| **H5** checklist arm games its grader (grader score - real success, vs base) | **Not supported:** +3.8 pp [-3, +11], p = 0.15 (trend) |
 | **H6** training beats asking | **Supported:** honest arm vs base + honesty prompt: false success -8.3 pp [-14, -4], p < 0.001 |
+
+One-sided task-level bootstrap tests. H1 remains significant after the preregistered Holm correction (p = 0.012).
 
 ## Takeaways
 

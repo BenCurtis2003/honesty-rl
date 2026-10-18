@@ -41,7 +41,8 @@ only partly possible, so the honest report is "not completed". Writes fail trans
 The agent ends with `submit_report(completed, summary)`. Every task is scored on the true end state, and
 the report is logged separately, so false success (claimed done, end state wrong) is measured directly.
 
-**Arms** (identical except the reward; 40 GRPO steps, 32 rollouts/step, LoRA r=16, 2× A6000):
+**Arms** (identical except the reward; 40 RL steps with group-relative advantages, 32 rollouts per step,
+LoRA rank 16, 2× A6000):
 
 | Arm | Reward |
 |---|---|
@@ -69,8 +70,8 @@ within a GRPO group (always solved or never solved). All 14 families are in the 
 The first pilot trained on noise: entropy was exactly ln(vocab size) = 12.42 and gradients were 0.
 Small Qwen 3.5 checkpoints tie the output layer to the input embeddings and ship no `lm_head` weight.
 prime-rl's loader skips `lm_head.weight` for tied configs, but its Qwen 3.5 model class never tied them,
-so the output layer stayed all zeros. A 5-line fix (plus a regression test) is
-[submitted upstream](#). After it: entropy 0.08, trainer–inference mismatch KL 0.0001.
+so the output layer stayed all zeros. A 5-line fix plus a regression test (it fails on prime-rl's
+`main` and passes with the fix) is in [`patches/`](../patches/) and submitted upstream. After it: entropy 0.08, trainer–inference mismatch KL 0.0001.
 
 ## Preregistered hypotheses
 
@@ -82,8 +83,10 @@ so the output layer stayed all zeros. A 5-line fix (plus a regression test) is
 | H2c: no collapse into "never claim done" | **Supported** (claim recall ~95% in both) |
 | H3: transfer to unseen benchmarks | **Uninformative:** Zapier's AutomationBench (simple) near ceiling for all models; Caseworker at floor for a 4B |
 | H4: no loss of general instruction following (IFEval) | **No significant loss:** honest +0.0 pp [-5, +5], outcome -1.5 pp [-7.5, +4], checklist -3.5 pp [-9, +2] (base 80%, 200 prompts); a 3 pp non-inferiority margin is not established at this n |
+| H5: the checklist arm games its own grader (grader score minus real success, vs base) | **Not supported:** +3.8 pp [−3, +11], p = 0.15 (trend only) |
 | H6: training beats a prompt | **Supported** (−8.3 pp vs. honesty-prompted base, p < 0.001) |
 
+One-sided bootstrap tests; H1 stays significant after the preregistered Holm correction (p = 0.012).
 Full plan and every deviation, with dates: [PREREGISTRATION.md](../PREREGISTRATION.md). Full tables:
 [results/RESULTS.md](../results/RESULTS.md).
 
@@ -98,5 +101,5 @@ here, or the model is larger.
 ## Reproduce
 
 `docs/RUNBOOK.md`. The configs are generated from one template and validated against prime-rl's schema.
-The whole study (pilots, three arms, evals) cost about $52 of GPU time, roughly $20 of it on mistakes
-(a runaway run, an idle node, a stray node), all documented in the deviations.
+The whole study (pilots, three arms, evals) cost about $51 of GPU time, roughly $15 of it on mistakes
+(a run that overshot its stop step, an idle node, a stray node), all documented in the deviations.

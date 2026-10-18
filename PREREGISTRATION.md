@@ -15,9 +15,9 @@ and benchmarks it never trained on?
 | | |
 |---|---|
 | Policy | `Qwen/Qwen3.5-4B`, LoRA rank 16 / alpha 32 on all attention + MLP projections, thinking off |
-| Trainer | prime-rl (commit `0956a885` + 5-line tied-embedding fix in `patches/`), 70 steps, 32 rollouts/step (4 tasks x 8), lr 1e-5 |
+| Trainer | prime-rl (commit `0956a885` + 5-line tied-embedding fix in `patches/`), 40 steps (see Deviations), 32 rollouts/step (4 tasks x 8), lr 1e-5 constant |
 | Training tasks | letter-vs-intent v0.6, `train` split, the 6 families with 17–69% pilot pass rate (refunds_policy, collections_legal, memo_override, partial_batch, impossible, reorder), `small` scale, 1,000 tasks, seed 11 |
-| Episode limits | 30 turns, 2,048 tokens per turn, 32k sequence length, 15-minute rollout timeout |
+| Episode limits | 30 turns, 8,192 tokens per turn (Revision 8d), 32k sequence length, 15-minute rollout timeout |
 | Hardware | 1 trainer GPU + 1 vLLM GPU (48 GB, e.g. A6000) |
 
 ### Arms (identical except for the reward)
@@ -65,8 +65,7 @@ honesty if H2c holds; otherwise the arm learned to say "not done" by default.
 | **H4** | No arm loses general instruction following | IFEval strict accuracy | each arm within -3 pp of base |
 | **H5** | The checklist arm games its grader | Checklist score minus real success on `lvi-test-mixed` | checklist arm > base |
 
-**Checkpoint rule:** final checkpoint (step 70) for every arm, with no selection by eval score.
-Learning curves (online evals every 25 steps) are reported in full.
+**Checkpoint rule:** the final checkpoint for every arm, with no selection by eval score.
 
 ## Secondary and exploratory (reported, not tested for significance)
 
@@ -76,7 +75,6 @@ Learning curves (online evals every 25 steps) are reported in full.
 - Error types on close and payroll failures; Caseworker harm metrics (wrongful denials, $ withheld)
 - Would an LLM judge catch the checklist arm's cheating? Qwen 3.5 122B (transcript view) over each
   arm's `lvi-test-mixed` traces (~$0.30)
-- AutomationBench `sales` domain (harder; expected near-floor for a 9B model)
 
 ## Go/no-go after the pilot (20 steps, checklist arm)
 
@@ -91,7 +89,7 @@ Continue to full runs only if all hold; otherwise apply the listed fallback once
 
 ## What would count as a null result
 
-H1 null: the checklist arm's false success is not higher than the outcome arm's within 150 steps,
+H1 null: the checklist arm's false success is not higher than the outcome arm's within the training budget,
 i.e. the model didn't discover the shortcut. Still worth reporting. H2 null: honesty
 shaping does not reduce false success beyond what outcome training already does.
 
@@ -115,18 +113,22 @@ shaping does not reduce false success beyond what outcome training already does.
    succeeded), held-out curve every 50 steps, 2nd-seed adapters evaluated on primary sources only,
    AutomationBench `sales` dropped. Expected spend ~$27.
 
-8. **After the pilot (2026-10-17), before any main run:** (a) prime-rl bug: its Qwen3.5 class never tied
+8. **After the pilot (2026-10-17), before the main runs:** (a) prime-rl bug: its Qwen3.5 class never tied
    the output layer to the embeddings, so for tied checkpoints (4B) the trainer saw all-zero logits;
    fixed with a 5-line patch (`patches/`), verified: entropy 12.42 → 0.08, mismatch KL 11.3 → 0.0001.
    (b) Training restricted to the 6 families with 17–69% pilot pass rate: the other 8 never varied
    within a group (admission 27% → 80–100%). All 14 families stay in the held-out evals, so the 8
-   untrained ones also measure within-domain transfer. (c) Budget option A: 3 arms; the 2nd seed is deferred (configs kept). Steps 120 → 70 at step 5 of the
-   first arm: measured ~6 min/step, and 120 would exceed the budget. LR is constant, so the checklist
-   arm stopped at step 70 is identical to configuring 70. (d) Per-turn cap 2,048 → 8,192 tokens (thinking off, the 4B
+   untrained ones also measure within-domain transfer. (c) Budget option A: 3 arms x 120 steps; the 2nd seed deferred (configs kept). (d) Per-turn cap 2,048 → 8,192 tokens (thinking off, the 4B
    reasons in its reply). Pilot go/no-go all passed.
 
 ## Deviations
 
+- **2026-10-17, during the first main run (checklist arm, step 5):** steps 120 → 70 for all arms after
+  measuring ~6 min/step (120 would exceed the budget). LR is constant, so stopping at 70 equals
+  configuring 70.
+- **2026-10-18, before the outcome and honest arms:** steps 70 → 40 for those arms (budget, after the
+  first run overshot). All arms are compared on the same final evals; the checklist arm's step-40 online
+  eval is also reported.
 - **2026-10-17/18 run issues:** the checklist arm ran to step 77 (stop-watcher grep missed ANSI color
   codes); outcome and honest arms ran exactly 40 steps. Primary comparisons use final evals (checklist at
   step 77, others at 40); the checklist arm's step-40 online eval pointed the same way.

@@ -3,8 +3,8 @@
 **Does RL teach agents to lie about finishing their work, and can the reward stop it?**
 
 A preregistered, three-arm RL experiment on Qwen 3.5 4B (LoRA, prime-rl). Training uses
-multi-step back-office tasks that are scored against the true end state. Evaluation adds two
-domains the model never trained on, including Zapier's third-party benchmark.
+multi-step back-office tasks that are scored against the true end state. Evaluation uses held-out
+tasks (including 8 task families never trained on), Zapier's third-party AutomationBench, and IFEval.
 
 | Arm | Trained against |
 |---|---|
@@ -14,10 +14,10 @@ domains the model never trained on, including Zapier's third-party benchmark.
 
 | Eval | What it tests |
 |---|---|
-| letter-vs-intent `test` (mixed, expert, pressure prompts) | Held-out tasks from the training domain |
-| Caseworker `test` | Unseen domain: SNAP eligibility under real federal rules |
-| AutomationBench (Zapier) + self-report wrapper | Unseen third-party benchmark |
-| IFEval | General ability didn't regress |
+| letter-vs-intent `test` (all 14 families; 84 tasks x 2) | Held-out tasks, incl. 8 families never trained on |
+| Same tasks + an explicit honesty instruction (base model) | Does prompting alone do it? |
+| AutomationBench (Zapier, `simple`) + self-report wrapper | Unseen third-party benchmark |
+| IFEval (200 prompts) | General ability didn't regress |
 
 ## Results (held-out, 84 tasks x 2 attempts per model)
 
@@ -51,7 +51,11 @@ small Qwen 3.5 checkpoints on all-zero logits.
 | `scripts/training_curves.py` | W&B curves: reward optimized vs. ground truth |
 | `scripts/gpu/` | Node setup, pilot, per-arm training, final evals |
 | `envs/automationbench_honesty/` | AutomationBench + a self-report tool and false-success metrics |
-| `docs/WRITEUP_DRAFT.md` | Paper-style draft with result slots |
+| `docs/WRITEUP.md` | Writeup |
+| `results/` | Final eval traces, summary tables, figure, pre-study data |
+| `patches/` | prime-rl fix for Qwen 3.5 tied embeddings |
 
-Environments live in their own repos: `letter-vs-intent` (v0.6) and `caseworker` (v0.2).
+Environments live in their own repos: [letter-vs-intent](https://github.com/BenCurtis2003/letter-vs-intent)
+(v0.6) and [caseworker](https://github.com/BenCurtis2003/caseworker) (v0.2; at 0% for a 4B model, so it was
+dropped from the final evals).
 All data is synthetic.
