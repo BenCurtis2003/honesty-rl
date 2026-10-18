@@ -14,14 +14,24 @@ sooner.
 
 ## 1. Budget
 
-| Stage | Node hours | Cost |
+| Stage (measured, 2x A6000 at $1.08/hr) | Node hours | Cost |
 |---|---|---|
-| Setup + pilot (20 steps) | ~1.5 | ~$2 |
-| checklist, outcome, honest (150 steps each, 30-turn cap) | ~4 each | ~$13 |
-| 2nd seed: outcome_s2, honest_s2 (run last) | ~4 each | ~$9 |
-| Final evals (2nd seeds: primary sources only) + AutomationBench simple | ~3 | ~$3 |
-| Does an LLM judge catch the cheating? (API, 122B) | - | ~$0.30 |
-| **Expected total** | | **~$27** (fits $30 with ~$3 spare) |
+| Setup (with all fixes in `setup_node.sh`) | ~0.2 | ~$0.25 |
+| Pilot (10 steps) | ~0.8 | ~$1 |
+| One arm, 40 steps (step 40 at ~4.7 h, incl. step-0 eval) | ~4.7 | ~$5 |
+| Final evals: 4 models x (84 tasks x 2 + AutomationBench 50) | ~2.5 | ~$3 |
+| IFEval, 4 models x 200 prompts | ~0.4 | ~$0.50 |
+| **3 arms + evals** | | **~$20** |
+
+Step time grows as training goes on (6 min early, 16-36 min past step 60 in our runs), so budget
+by measured wall-clock, not by step count.
+
+Safety, learned the hard way:
+- Run `scripts/budget_guard.sh` locally for every rented node, and still check in yourself: it stalled twice.
+- After any `prime pods create`, check `prime wallet` billing rows for stray nodes. Never pipe input into
+  `pods create` to see options; that silently created a second node.
+- prime-rl logs contain ANSI color codes; strip them before grepping (`sed "s/\x1b\[[0-9;]*m//g"`).
+- Do not export `VLLM_API_KEY`: vLLM then requires it, and the orchestrator gets 401.
 
 Spending guards: (1) if the pilot's step time is over 3 minutes, re-plan before the full runs;
 (2) the two 2nd-seed runs go last. Check `prime wallet` after the first three arms, and launch them
@@ -48,7 +58,7 @@ bash ~/honesty-rl/scripts/gpu/setup_node.sh   # prime-rl @ pinned commit, envs, 
 wandb login                                   # training curves
 ```
 
-## 4. Pilot (~$6): go/no-go
+## 4. Pilot (~$1): go/no-go
 
 ```bash
 bash ~/honesty-rl/scripts/gpu/pilot.sh
@@ -65,7 +75,7 @@ Check against PREREGISTRATION.md's go/no-go table:
 5. **Stability:** errors < 10%, truncations < 20%.
 
 
-## 5. Full runs (~$75)
+## 5. Full runs (~$5 per arm)
 
 On the same node, one after another (~20 h), or in parallel on separate nodes (same cost):
 
@@ -78,7 +88,7 @@ for arm in outcome_s2 honest_s2; do bash ~/honesty-rl/scripts/gpu/run_arm.sh $ar
 Each run ends by copying its final LoRA adapter to `~/adapters/<arm>`. Copy all three adapters
 to one node for the final evals.
 
-## 6. Final evals (~$18)
+## 6. Final evals (~$3)
 
 ```bash
 bash ~/honesty-rl/scripts/gpu/final_evals.sh base checklist outcome honest outcome_s2 honest_s2
