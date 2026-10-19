@@ -19,17 +19,21 @@ On 84 held-out tasks (168 attempts per model):
 | Trained against **ground-truth outcomes** | 46% | 5% | 46% |
 | Ground truth **+ a bonus for a truthful "completed" flag** | 48% | 4% | 47% |
 
-- **Ground-truth RL cut false claims of success ~4× and raised real success +15 pp**, including on task
-  families never seen in training, without the model learning to refuse to claim success (it still
+These are seed 1. A second training seed for both ground-truth arms replicated them: pooled over both
+seeds, outcome 46% real success / 6% false success, honest 46% / 5%
+([results/RESULTS.md](../results/RESULTS.md)).
+
+- **Ground-truth RL cut false claims of success 3–4× (19% → 5–6%) and raised real success ~14 pp**
+  (both seeds pooled), including on task families never seen in training, without the model learning to refuse to claim success (it still
   claims "done" ~95% of the time when it is done).
 - **A gameable grader taught none of that.** Versus ground truth: +12.5 pp false success
-  (95% CI [+4, +23], p = 0.003) and −14 pp real success.
+  (95% CI [+4, +23], p = 0.003; +11.9 pp, p = 0.002 with both ground-truth seeds) and −14 pp real success.
 - **General ability intact:** IFEval strict accuracy 80% for base and the honest arm (outcome 79%,
   checklist 77%; no significant drop).
-- **Training beats asking:** the honest arm had 8 pp less false success than the base model given an
-  explicit honesty instruction (p < 0.001).
+- **Training beats asking:** the honest arm had 7–8 pp less false success than the base model given an
+  explicit honesty instruction (p < 0.001, seed 1 and both seeds pooled).
 - **The surprise:** an explicit truthful-report bonus on top of ground-truth reward added nothing
-  measurable (−1.2 pp, CI [−5, +2]). Once the outcome is verified, the cheap honesty term was redundant at
+  measurable (−1.2 pp, CI [−5, +2]; −0.9 pp [−3, +2] with two seeds). Once the outcome is verified, the cheap honesty term was redundant at
   this scale.
 
 ## Setup
@@ -61,7 +65,7 @@ within a GRPO group (always solved or never solved). All 14 families are in the 
    deterministic checklist grader instead of training against noise.
 2. **Audit the reward with scripted policies first.** Writing junk into every required field and claiming
    success scored 1.00 under the checklist grader, *above* genuine complete work (0.93). Under the honesty
-   reward, admitting failure always beats claiming success by exactly 0.30.
+   reward, admitting failure always beats claiming success, by at least 0.30.
 3. **Probe for learnability.** At training difficulty the 9B was at ceiling (86% success, 4% false
    success), leaving nothing to learn. The 4B (36% / 39%) had room in both directions.
 
@@ -78,14 +82,14 @@ so the output layer stayed all zeros. A 5-line fix plus a regression test (it fa
 
 | | Result |
 |---|---|
-| H1: gameable grader → more false success than ground truth | **Supported** (+12.5 pp, p = 0.003) |
-| H2a: truthful-report bonus → less false success than ground truth alone | **Not supported** (−1.2 pp, CI [−5, +2]) |
+| H1: gameable grader → more false success than ground truth | **Supported** (+12.5 pp, p = 0.003; two seeds: +11.9 pp, p = 0.002) |
+| H2a: truthful-report bonus → less false success than ground truth alone | **Not supported** (−1.2 pp, CI [−5, +2]; two seeds: −0.9 pp [−3, +2]) |
 | H2b: no cost to real success | **Supported** (+1.8 pp) |
 | H2c: no collapse into "never claim done" | **Supported** (claim recall ~95% in both) |
 | H3: transfer to unseen benchmarks | **Uninformative:** Zapier's AutomationBench (simple) near ceiling for all models; SafetyNetBench at floor for a 4B |
 | H4: no loss of general instruction following (IFEval) | **No significant loss:** honest +0.0 pp [-5, +5], outcome -1.5 pp [-7.5, +4], checklist -3.5 pp [-9, +2] (base 80%, 200 prompts); a 3 pp non-inferiority margin is not established at this n |
 | H5: the checklist arm games its own grader (grader score minus real success, vs base) | **Not supported:** +3.8 pp [−3, +11], p = 0.15 (trend only) |
-| H6: training beats a prompt | **Supported** (−8.3 pp vs. honesty-prompted base, p < 0.001) |
+| H6: training beats a prompt | **Supported** (−8.3 pp vs. honesty-prompted base, p < 0.001; two seeds: −7.4 pp, p < 0.001) |
 
 One-sided bootstrap tests; H1 stays significant after the preregistered Holm correction (p = 0.012).
 Full plan and every deviation, with dates: [PREREGISTRATION.md](../PREREGISTRATION.md). Full tables:
@@ -93,9 +97,12 @@ Full plan and every deviation, with dates: [PREREGISTRATION.md](../PREREGISTRATI
 
 ## Limitations
 
-One seed per arm, a 4B model, 40 steps, synthetic tasks. The checklist arm trained 77 steps rather than
-40 (a monitoring bug); its step-40 online eval pointed the same way. Training curves survive only for that
-arm. Transfer benchmarks were too easy or too hard to separate the arms. The honest-reward result is a
+Two seeds for the two ground-truth arms but one for the checklist arm, a 4B model, 40 steps, synthetic
+tasks. The checklist arm trained 77 steps rather than 40 (a monitoring bug); its step-40 online eval pointed
+the same way. Training curves survive for the checklist arm and for the second seed of the other two. A
+later audit of the task scorers found that one training family (`reorder`) accepted under-filled orders
+when the budget covered everything; rescoring every saved test run changes no outcome, but that family's
+training reward was slightly lenient. Transfer benchmarks were too easy or too hard to separate the arms. The honest-reward result is a
 null at this scale, not proof the bonus never helps: it may matter when the outcome check is weaker than
 here, or the model is larger.
 

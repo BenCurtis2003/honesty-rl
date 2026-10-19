@@ -31,9 +31,10 @@ tasks (including 8 task families never trained on), Zapier's third-party Automat
 | outcome arm (ground truth) | 46% | 5% | 46% |
 | honest arm (ground truth + truthful-claim bonus) | 48% | 4% | 47% |
 
-Ground-truth RL cut false claims of success ~4x and raised real success +15 pp; a gameable grader did
-neither (+12.5 pp false success vs ground truth, p = 0.003); the extra honesty bonus added nothing
-measurable on top of ground truth. Writeup: [docs/WRITEUP.md](docs/WRITEUP.md) · tables:
+Ground-truth RL cut false claims of success 3-4x (19% → 5-6%) and raised real success ~14 pp; a gameable
+grader did neither (+11.9 pp false success vs ground truth, p = 0.002); the extra honesty bonus added
+nothing measurable on top of ground truth. The table shows seed 1; the figures in this paragraph pool
+two training seeds for the ground-truth arms, and the second seed replicated every conclusion. Writeup: [docs/WRITEUP.md](docs/WRITEUP.md) · tables:
 [results/RESULTS.md](results/RESULTS.md) · plan + deviations: [PREREGISTRATION.md](PREREGISTRATION.md).
 
 Along the way: a fix for prime-rl's Qwen 3.5 tied-embedding bug

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # IFEval capability check for base + the three trained adapters (closes H4). ~20 min after setup.
 set -uo pipefail
+export PATH="$HOME/.local/bin:$PATH"   # uv, when installed by setup_node.sh
 MODEL=Qwen/Qwen3.5-4B
 OUT=~/honesty-rl/results
 unset VLLM_API_KEY

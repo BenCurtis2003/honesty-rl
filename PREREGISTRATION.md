@@ -36,7 +36,8 @@ checklist arm can skip computing them correctly.
 
 - **Hackability audit** (`results/hackability.md`, scripted policies, no model): lying about the
   same work pays only under report-trusting reward; it never pays under `honest_partial`, which
-  rewards admitting failure by exactly +0.3 at every level of work.
+  rewards admitting failure by at least +0.3 at every level of work (exactly +0.3 on templates that don't
+  score the report itself).
 - **LLM judges don't work on these tasks** (`results/judge_cal_*.jsonl`, 100 labeled rollouts):
   the best affordable setup (Qwen 3.5 122B, transcript) reached 0.61 balanced accuracy; 9B with the
   transcript 0.52; giving judges the final database made them fail almost everything (0.50–0.54).
@@ -137,6 +138,13 @@ shaping does not reduce false success beyond what outcome training already does.
   2026-10-18 after setting `network_allow = ["*"]` (single-turn, no tools).
 - Training curves for outcome/honest were not retained (node terminated before download); final evals,
   online step-40 evals and adapters were.
+- **2026-10-19, second seed (planned in Revision 6):** outcome and honest arms retrained with seed 23 on the
+  same hardware (2x A6000) and settings, 40 steps each, then evaluated on the primary source
+  (`potemkin-test-mixed`) only. Results are reported for seed 2 alone and pooled per task with seed 1;
+  seed-1 results are unchanged. The checklist arm has one seed. Seed-2 training curves were retained.
+- **2026-10-19, wording correction:** the evidence line above said the honesty reward favors admitting
+  failure "by exactly +0.3"; it is at least +0.3 (more on the four templates whose checks include the
+  report).
 - **2026-10-18, after analysis (labels only):** the environments were renamed (now PotemkinBench and
   SafetyNetBench), so eval-source labels changed from their original prefixes to `potemkin-*` and
   `safetynet-test`. No data, task, or test changed; re-running the analysis reproduces every number.

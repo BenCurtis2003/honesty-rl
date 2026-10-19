@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
-# One-time setup on a fresh 2x 80GB GPU node (A100 or H100). Run from the node's home directory
+# One-time setup on a fresh 2-GPU node (2x A6000 48GB used here). Run from the node's home directory
 # after copying the four project folders there (see docs/RUNBOOK.md, step 2).
 set -euo pipefail
 PRIME_RL_COMMIT=0956a8858005019b7b16d26898142063ec1bb5e8   # validated configs against this commit
 cd ~
+# some provider images ship without uv
+command -v uv >/dev/null || { curl -LsSf https://astral.sh/uv/install.sh | sh || true; }   # installer can fail on shell-profile edits after installing
+export PATH="$HOME/.local/bin:$PATH"
 git config --global url."https://github.com/".insteadOf "git@github.com:"   # submodules use SSH URLs
 [ -d prime-rl ] || git clone https://github.com/PrimeIntellect-ai/prime-rl.git
 cd prime-rl && git checkout -q "$PRIME_RL_COMMIT" \

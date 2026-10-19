@@ -3,6 +3,7 @@
 # Each stage has a wall-clock cap so nothing can run away.
 #   setsid nohup bash ~/honesty-rl/scripts/gpu/run_all.sh > ~/runs/run_all.log 2>&1 &
 set -uo pipefail
+export PATH="$HOME/.local/bin:$PATH"   # uv, when installed by setup_node.sh
 for arm in outcome honest; do
   if [ -f ~/adapters/$arm/adapter_model.safetensors ]; then echo "skip $arm (adapter exists)"; continue; fi
   echo "=== $(date -u +%F' '%T) start $arm"

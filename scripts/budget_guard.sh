@@ -21,18 +21,20 @@ while true; do
   if [ -n "$BAL" ] && awk "BEGIN{exit !($BAL < $FLOOR)}"; then
     echo "BALANCE BELOW FLOOR -> stopping"
     if [ "$DRY" = "--dry-run" ]; then echo "(dry run: would stop training and terminate $POD)"; exit 0; fi
-    TO 60 $SSH $HOST 'pkill -f "[r]un_all.sh"; pkill -f "[p]rime_rl"; pkill -f "[t]orchrun"' 2>/dev/null
+    TO 60 $SSH $HOST 'pkill -f "[r]un_all.sh"; pkill -f "[r]un_s2.sh"; pkill -f "[p]rime_rl"; pkill -f "[t]orchrun"' 2>/dev/null
     echo "NOTE: results stay on the pod disk until terminate; downloading results/ first"
-    rsync -az -e "$SSH" $HOST:~/honesty-rl/results/ ~/code/honesty-rl/results/run2_partial/ 2>/dev/null
-    prime --plain pods terminate $POD --yes; exit 1
+    TO 900 rsync -az -e "$SSH" $HOST:~/honesty-rl/results/ ~/code/honesty-rl/results/run2_partial/ 2>/dev/null
+    TO 120 prime --plain pods terminate $POD --yes; exit 1
   fi
   if [ "${DONE:-0}" -ge 1 ] 2>/dev/null; then
     echo "run finished -> downloading results, then terminating pod"
     if [ "$DRY" = "--dry-run" ]; then exit 0; fi
     if [ -n "$DONE_FILE" ]; then
       PULL=${PULL_INCLUDE:-ifeval/**}; DEST=${PULL_DEST:-ifeval_run}
-      TO 1800 rsync -az -e "$SSH" --include="*/" --include="$PULL" --exclude="*" $HOST:~/honesty-rl/results/ ~/code/honesty-rl/results/$DEST/ \
-        && prime --plain pods terminate $POD --yes; exit 0
+      if TO 1800 rsync -az -e "$SSH" --include="*/" --include="$PULL" --exclude="*" $HOST:~/honesty-rl/results/ ~/code/honesty-rl/results/$DEST/; then
+        TO 120 prime --plain pods terminate $POD --yes; exit 0
+      fi
+      echo "download failed -> pod left running, retrying next loop"; continue
     fi
     rsync -az -e "$SSH" $HOST:~/honesty-rl/results/ ~/code/honesty-rl/results/ && \
     rsync -az -e "$SSH" --include="*/" --include="metrics.jsonl" --exclude="*" $HOST:~/runs/ ~/code/honesty-rl/results/runs/run2_metrics/ && \
@@ -40,5 +42,6 @@ while true; do
     prime --plain pods terminate $POD --yes; exit 0
   fi
   [ "$DRY" = "--dry-run" ] && exit 0
-  sleep 600
+  # short sleeps against the wall clock: macOS can stretch one long background sleep far past 10 min
+  next=$(($(date +%s) + 600)); while [ "$(date +%s)" -lt "$next" ]; do sleep 20; done
 done

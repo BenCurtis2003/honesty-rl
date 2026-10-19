@@ -7,3 +7,7 @@ results/ifeval_run/**/traces/
 logs/
 *.tgz
 *.safetensors
+results/two_seeds/
+results/seed2_only/
+results/seed2_run/*/train_metrics.jsonl
+results/seed2_run/*/adapter/.*

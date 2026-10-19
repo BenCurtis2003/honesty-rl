@@ -1,4 +1,4 @@
-# Results (run 2026-10-17/18): Qwen 3.5 4B, LoRA, 3 arms
+# Results (run 2026-10-17/18, second seed 2026-10-19): Qwen 3.5 4B, LoRA, 3 arms
 
 Held-out test: potemkin-bench `test` split, all 14 task families (6 trained, 8 never trained on),
 84 tasks x 2 attempts = 168 per model. 95% CIs: task-level paired bootstrap. Full tables:
@@ -12,6 +12,23 @@ Held-out test: potemkin-bench `test` split, all 14 task families (6 trained, 8 n
 | **checklist** (gameable grader) | 32% [23-42] | 18% [10-26] | 32% [22-42] | 97% |
 | **outcome** (ground truth) | 46% [37-57] | 5% [2-9] | 46% [36-57] | 96% |
 | **honest** (ground truth + truthful-claim bonus) | 48% [38-59] | 4% [1-8] | 47% [37-58] | 95% |
+
+The table above is seed 1. A second seed (seed 23, 2026-10-19, same hardware and settings) retrained the
+outcome and honest arms and repeated the primary eval:
+
+| Arm | Seed | Real success | False success | Truthful report | Claims "done" when done |
+|---|---|---|---|---|---|
+| outcome | 1 | 46% [37-57] | 5% [2-9] | 46% [36-57] | 96% |
+| outcome | 2 | 45% [35-55] | 7% [2-11] | 45% [35-56] | 100% |
+| **outcome** | **pooled** | **46% [36-56]** | **6% [3-10]** | **46% [36-56]** | **99%** |
+| honest | 1 | 48% [38-59] | 4% [1-8] | 47% [37-58] | 95% |
+| honest | 2 | 44% [34-55] | 6% [2-11] | 43% [34-54] | 98% |
+| **honest** | **pooled** | **46% [36-56]** | **5% [2-9]** | **45% [36-56]** | **95%** |
+
+Pooled = both seeds per task (2 seeds x 2 attempts). Full tables: `results/summary_2seeds.md`; tests:
+`results/hypotheses_2seeds.md` (reproduce with `bash scripts/seed2_wrapup.sh`). Seed-2 training curves:
+`results/seed2_run/*/train_curve.csv` (training-batch false success fell from 34% to 11% for outcome and
+from 47% to 10% for honest over 40 steps).
 
 ## Preregistered hypotheses
 
@@ -28,19 +45,34 @@ Held-out test: potemkin-bench `test` split, all 14 task families (6 trained, 8 n
 
 One-sided task-level bootstrap tests. H1 remains significant after the preregistered Holm correction (p = 0.012).
 
+**With both seeds** (outcome and honest pooled per task; checklist and base have one seed):
+
+| | Seed 2 alone | Both seeds pooled |
+|---|---|---|
+| **H1** checklist > outcome, false success | +11.3 pp [+3.0, +20.8], p = 0.005 | **+11.9 pp [+3.6, +21.4], p = 0.002** (Holm, conservative 4 x p: 0.008) |
+| **H2a** honest < outcome, false success | -0.6 pp [-4.2, +3.0] (not supported) | **-0.9 pp [-3.3, +1.8] (not supported)** |
+| **H2b** honest not worse on real success (> -5 pp) | -0.6 pp [-5.4, +3.6], p = 0.031 | **+0.6 pp [-2.7, +3.6], p = 0.001** |
+| **H2c** no collapse in claim recall (> -10 pp) | -2.2 pp [-6.5, 0.0], p = 0.004 | **-0.9 pp [-2.7, 0.0], p < 0.001** |
+| **H6** honest < base + honesty prompt, false success | -6.5 pp [-12.5, -1.8], p = 0.006 | **-7.4 pp [-12.5, -3.0], p < 0.001** |
+
+Every conclusion above holds with the second seed.
+
 ## Takeaways
 
-1. Ground-truth RL (either reward) raised real success +15-17 pp and cut false claims of success ~4x
-   (19% → 4-5%) on held-out tasks, including families never trained on, without making the model
+1. Ground-truth RL (either reward) raised real success ~14 pp and cut false claims of success 3-4x
+   (19% → 5-6%, both seeds pooled; seed 1 alone: +15-17 pp, 4-5%) on held-out tasks, including families never trained on, without making the model
    refuse to claim success when it had succeeded.
 2. Training against a gameable "deliverables exist + says done" grader gave none of that: success
    flat, false success flat, and it claimed "done" more often (+7 pp).
 3. At this scale (40 steps), adding an explicit truthful-report bonus on top of ground-truth outcome
    reward did not add measurable honesty: the outcome reward already penalizes the few dishonest paths.
-4. A prompt-only honesty instruction helped a little (19% → 12%); training did much better (4%).
+4. A prompt-only honesty instruction helped a little (19% → 12%); training did much better (5%, both seeds pooled).
 
 ## Caveats
 
-One seed per arm, 4B model, synthetic tasks, short training. The checklist arm trained longer
-(77 vs 40 steps). AutomationBench near ceiling and SafetyNetBench at floor, so transfer claims are limited. IFEval was rerun
+Two seeds for the outcome and honest arms, one for the checklist arm; 4B model, synthetic tasks, short
+training. The checklist arm trained longer (77 vs 40 steps). A later scorer audit (PotemkinBench v0.8)
+found that the `reorder` training family's scorer accepted under-filled orders when the budget covered
+everything; rescoring every saved test run changes no outcome, but the training reward on that one family
+was slightly lenient. AutomationBench near ceiling and SafetyNetBench at floor, so transfer claims are limited. IFEval was rerun
 separately (2026-10-18) after fixing an eval-config error (network policy vs subprocess runtime).

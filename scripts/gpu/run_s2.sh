@@ -3,6 +3,7 @@
 # primary held-out eval for both. Each arm's training metrics + adapter are copied into results/.
 #   setsid nohup bash ~/honesty-rl/scripts/gpu/run_s2.sh > ~/runs/run_s2.log 2>&1 &
 set -uo pipefail
+export PATH="$HOME/.local/bin:$PATH"   # uv, when installed by setup_node.sh
 MODEL=Qwen/Qwen3.5-4B
 OUT=~/honesty-rl/results
 for arm in outcome_s2 honest_s2; do

@@ -2,6 +2,7 @@
 # Train one arm: scripts/gpu/run_arm.sh checklist|outcome|honest
 # One node runs one arm (~4-8 h). For all three in parallel, rent three nodes.
 set -euo pipefail
+export PATH="$HOME/.local/bin:$PATH"   # uv, when installed by setup_node.sh
 ARM=${1:?usage: run_arm.sh checklist|outcome|honest|outcome_s2|honest_s2}
 cd ~/prime-rl
 unset VLLM_API_KEY   # if set, vLLM demands it as a password and the orchestrator gets 401
