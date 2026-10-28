@@ -1,0 +1,14 @@
+diff --git a/src/prime_rl/utils/process.py b/src/prime_rl/utils/process.py
+index 29eab2c..89ab8d0 100644
+--- a/src/prime_rl/utils/process.py
++++ b/src/prime_rl/utils/process.py
+@@ -61,6 +61,9 @@ def get_physical_gpu_ids() -> list[int]:
+ def partition_gpus(num_infer: int, num_train: int) -> tuple[list[int], list[int]]:
+     """Split the launcher's physical GPUs into inference GPUs followed by trainer GPUs."""
+     physical_gpu_ids = get_physical_gpu_ids()
++    if os.environ.get("PRL_SHARE_GPU") == "1" and len(physical_gpu_ids) == 1 and num_infer == num_train == 1:
++        # honesty-rl patch: colocate inference and trainer on one GPU (set inference.vllm.gpu_memory_utilization low)
++        return physical_gpu_ids[:1], physical_gpu_ids[:1]
+     if num_infer + num_train > len(physical_gpu_ids):
+         raise ValueError(
+             f"Requested {num_infer + num_train} GPUs via deployment settings, but only "

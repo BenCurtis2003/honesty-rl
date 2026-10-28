@@ -4,13 +4,17 @@
 set -euo pipefail
 PRIME_RL_COMMIT=0956a8858005019b7b16d26898142063ec1bb5e8   # validated configs against this commit
 cd ~
+# Older drivers (e.g. 550 / CUDA 12.4 on Nebius H200) cannot run the cu13 torch build: use NVIDIA forward-compat libs
+if nvidia-smi | grep "CUDA Version: 12" >/dev/null; then sudo apt-get update -qq && sudo apt-get install -y -qq cuda-compat-13-0 \
+  && sudo sh -c "echo /usr/local/cuda-13.0/compat > /etc/ld.so.conf.d/000-cuda-compat.conf && ldconfig"; fi
 # some provider images ship without uv
 command -v uv >/dev/null || { curl -LsSf https://astral.sh/uv/install.sh | sh || true; }   # installer can fail on shell-profile edits after installing
 export PATH="$HOME/.local/bin:$PATH"
 git config --global url."https://github.com/".insteadOf "git@github.com:"   # submodules use SSH URLs
 [ -d prime-rl ] || git clone https://github.com/PrimeIntellect-ai/prime-rl.git
 cd prime-rl && git checkout -q "$PRIME_RL_COMMIT" \
-  && (git apply --check ~/honesty-rl/patches/prime-rl-qwen3_5-tied-lm-head.patch 2>/dev/null && git apply ~/honesty-rl/patches/prime-rl-qwen3_5-tied-lm-head.patch || echo "tied lm_head patch already applied") && git submodule update --init --recursive \
+  && (git apply --check ~/honesty-rl/patches/prime-rl-qwen3_5-tied-lm-head.patch 2>/dev/null && git apply ~/honesty-rl/patches/prime-rl-qwen3_5-tied-lm-head.patch || echo "tied lm_head patch already applied") \
+  && (git apply --check ~/honesty-rl/patches/prime-rl-share-gpu.patch 2>/dev/null && git apply ~/honesty-rl/patches/prime-rl-share-gpu.patch || echo "share-gpu patch already applied") && git submodule update --init --recursive \
   && git submodule foreach --recursive "git checkout -f -q HEAD" && uv sync --all-extras   # empty-tree submodules; GPU extras (torch, vllm, flash-attn)
 
 # Our environments + the capability-check env, into prime-rl's venv

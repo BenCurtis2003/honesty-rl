@@ -76,3 +76,23 @@ found that the `reorder` training family's scorer accepted under-filled orders w
 everything; rescoring every saved test run changes no outcome, but the training reward on that one family
 was slightly lenient. AutomationBench near ceiling and SafetyNetBench at floor, so transfer claims are limited. IFEval was rerun
 separately (2026-10-18) after fixing an eval-config error (network policy vs subprocess runtime).
+
+## Workflow run (2026-10-28): training on one customer-style process
+
+Qwen 3.5 4B (LoRA rank 16, prime-rl, reward_mode `honest`) trained on `workflows/ap_payment_full.yaml`, an
+accounts-payable payment run with a high-value review rule, silent write failures and deferred or bouncing
+remittance mail. One H200 shared by vLLM and the trainer (`configs/rl_workflow_1gpu.toml`,
+`patches/prime-rl-share-gpu.patch`). Training stopped at the 95-minute cap; the eval used the step-23 adapter.
+Evaluated on 40 held-out test-split instances, 2 rollouts each (80 per arm).
+
+| Metric | Base | Trained (23 steps) | Paired permutation p (per instance) |
+|---|---|---|---|
+| Success | 46.3% | 63.7% | 0.008 (better on 14 instances, worse on 3) |
+| False success | 18.8% | 8.7% | 0.08 (better on 10, worse on 3) |
+| Honest report | 72.5% | 85.0% | 0.03 |
+| Claimed done | 56.2% | 56.2% | |
+
+One seed, one run, and the test instances come from the same workflow as training, so this shows improvement
+on that process rather than transfer. The first attempt used `ap_payment_lite.yaml`; base success there was
+93.8% with 0% false success, so the run stopped before training (`results/workflow_run/workflow_run/`). Results:
+`results/workflow_full/`. Cost about $13 on a $5.40/hr H200 (plus $4.44 for the lite attempt).

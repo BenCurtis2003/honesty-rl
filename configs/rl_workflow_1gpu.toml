@@ -1,0 +1,75 @@
+# Hand-written copy of rl_workflow.toml for ONE GPU (e.g. 1x H200 141GB): inference + trainer colocated.
+# Needs patches/prime-rl-share-gpu.patch and PRL_SHARE_GPU=1 (run_workflow.sh sets both when GPUS=1).
+# Workflow run: one customer-style workflow (workflows/ap_payment_lite.yaml), reward_mode = "honest". Hardware: 2 x 48GB GPUs, e.g. A6000 (1 trainer, 1 vLLM).
+#   uv run rl @ configs/rl_workflow.toml --run.name workflow (scripts/gpu/run_workflow.sh fills __WF__)
+max_steps = 40
+seq_len = 32768
+
+[deployment]
+num_train_gpus = 1
+num_infer_gpus = 1
+
+[model]
+name = "Qwen/Qwen3.5-4B"
+
+[monitors.wandb]
+project = "honesty-rl"
+name = "workflow"
+
+[trainer.optim]
+lr = 1e-05
+weight_decay = 0.0
+
+# Qwen3.5 is a vision-language checkpoint: without this block the trainer loads no language-model
+# weights (pilot 1: entropy = ln(vocab), grad norm 0). bfloat16 is required for VLMs (docs/advanced.md).
+[trainer.model]
+optimization_dtype = "bfloat16"
+reduce_dtype = "bfloat16"
+
+[trainer.model.vlm]
+vision_encoder_attr = "model.visual"
+language_model_attr = "model.language_model"
+
+[trainer.model.lora]
+rank = 16
+alpha = 32
+dropout = 0.0
+target_modules = ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]
+
+[orchestrator]
+batch_size = 32
+
+[orchestrator.concurrency]
+initial_inflight = 32   # smoke test: trainer peaked at 23 GiB, so vLLM can take 65% of the H200
+
+[orchestrator.train]
+group_size = 8
+
+[orchestrator.train.sampling]
+max_completion_tokens = 8192
+temperature = 1.0
+extra_body = { chat_template_kwargs = { enable_thinking = false } }
+
+[[orchestrator.train.source]]
+name = "ap-workflow"
+curriculum = { gates = { zero_advantage = { type = "advantage_range" } } }
+env.taskset.id = "potemkin-bench"
+env.taskset.workflow = "__WF__"
+env.taskset.split = "train"
+env.taskset.num_tasks = 400
+env.taskset.seed = 11
+env.taskset.task.reward_mode = "honest"
+env.agent = { harness = { id = "null" }, runtime = { type = "subprocess" }, max_turns = 50, timeout = { rollout = 900 } }
+
+[ckpt]
+interval = 40
+
+[inference.vllm]
+enable_lora = true
+max_model_len = 32768
+gpu_memory_utilization = 0.65   # LoRA trainer peaked at 22.7 GiB of 141 GiB in the 2-step smoke test
+
+# Port 5555 (prime-rl's default) is taken by nv-hostengine (DCGM) on some provider images.
+[rollout_transport]
+type = "zmq"
+port = 5655

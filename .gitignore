@@ -11,3 +11,5 @@ results/two_seeds/
 results/seed2_only/
 results/seed2_run/*/train_metrics.jsonl
 results/seed2_run/*/adapter/.*
+results/workflow_full/adapter/
+results/workflow_full/train_metrics.jsonl

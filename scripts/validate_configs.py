@@ -24,7 +24,8 @@ def main() -> int:
             if cls is RLConfig:
                 src = cfg.orchestrator.train.source[0]
                 task = src.env.taskset.task
-                extra = f"reward_mode={task.reward_mode} evals={[s.resolved_name for s in cfg.orchestrator.eval.source]}"
+                evals = [s.resolved_name for s in cfg.orchestrator.eval.source] if cfg.orchestrator.eval else []
+                extra = f"reward_mode={task.reward_mode} evals={evals}"
             print(f"OK   {path} {extra}")
         except Exception as e:  # noqa: BLE001
             bad += 1

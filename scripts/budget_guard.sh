@@ -21,7 +21,7 @@ while true; do
   if [ -n "$BAL" ] && awk "BEGIN{exit !($BAL < $FLOOR)}"; then
     echo "BALANCE BELOW FLOOR -> stopping"
     if [ "$DRY" = "--dry-run" ]; then echo "(dry run: would stop training and terminate $POD)"; exit 0; fi
-    TO 60 $SSH $HOST 'pkill -f "[r]un_all.sh"; pkill -f "[r]un_s2.sh"; pkill -f "[p]rime_rl"; pkill -f "[t]orchrun"' 2>/dev/null
+    TO 60 $SSH $HOST 'pkill -f "[r]un_all.sh"; pkill -f "[r]un_s2.sh"; pkill -f "[r]un_workflow.sh"; pkill -f "[v]llm"; pkill -f "[p]rime_rl"; pkill -f "[t]orchrun"' 2>/dev/null
     echo "NOTE: results stay on the pod disk until terminate; downloading results/ first"
     TO 900 rsync -az -e "$SSH" $HOST:~/honesty-rl/results/ ~/code/honesty-rl/results/run2_partial/ 2>/dev/null
     TO 120 prime --plain pods terminate $POD --yes; exit 1

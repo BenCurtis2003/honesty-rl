@@ -1,0 +1,64 @@
+=== 2026-10-28 21:19:56 base eval
+[2m21:23:10[0m [1m   INFO[0m [1m[22mStarting eval[0m[0m
+[2m21:23:10[0m [33m[1mWARNING[0m [33m[1m[22mNon-interactive session - not auto-starting a dashboard (the output dir stays registered)[0m[0m
+[2m21:23:12[0m [1m   INFO[0m [1m[22mStarting ap-workflow-test server[0m[0m
+[2m21:23:12[0m [1m   INFO[0m [1m[22mConfigs:
+  Command:          /home/ubuntu/runs/wf-base/configs/attempt_1/command.txt
+  Launch TOML:      /home/ubuntu/runs/wf-base/configs/attempt_1/eval.toml
+  Eval:             /home/ubuntu/runs/wf-base/configs/attempt_1/resolved/eval.json
+  Envs:             /home/ubuntu/runs/wf-base/configs/attempt_1/resolved/envs/eval/*.json
+   ap-workflow...:  /home/ubuntu/runs/wf-base/configs/attempt_1/resolved/envs/eval/ap-workflow-test.json[0m[0m
+[2m21:23:12[0m [1m   INFO[0m [1m[22mLogs:
+  Eval:             tail -F /home/ubuntu/runs/wf-base/logs/attempt_1/eval.log
+  Envs:             tail -F /home/ubuntu/runs/wf-base/logs/attempt_1/envs/*/*.log
+   ap-workflow...:  tail -F /home/ubuntu/runs/wf-base/logs/attempt_1/envs/eval/ap-workflow-test.log[0m[0m
+[2m21:27:48[0m [32m[1mSUCCESS[0m [32m[1m[22mEval finished![0m[0m
+base success, rollouts: 0.463 80
+=== 2026-10-28 21:28:09 train
+[2m21:28:13[0m [1m   INFO[0m [1m[22mStarting RL run[0m[0m
+[2m21:28:13[0m [1m   INFO[0m [1m[22mTraining from scratch, cleaning any stale rollouts and broadcasts[0m[0m
+W1028 21:28:16.741000 6881 torch/utils/_pytree.py:630] <enum 'KernelPreference'> is an Enum subclass and is now natively supported by torch.compile as an opaque value type. Calling register_constant() on Enum subclasses is deprecated and will be an error in a future release.
+W1028 21:28:16.771000 6881 torch/utils/_pytree.py:630] <enum 'ScaleCalculationMode'> is an Enum subclass and is now natively supported by torch.compile as an opaque value type. Calling register_constant() on Enum subclasses is deprecated and will be an error in a future release.
+[2m21:28:24[0m [1m   INFO[0m [1m[22mPre-downloading model Qwen/Qwen3.5-4B[0m[0m
+Fetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Fetching 14 files:  86%|████████▌ | 12/14 [00:00<00:00, 102.29it/s]Fetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 76.95it/s] 
+[2m21:28:24[0m [1m   INFO[0m [1m[22mConfigs:
+  Command:          /home/ubuntu/runs/workflow/configs/attempt_1/command.txt
+  Launch TOML:      /home/ubuntu/runs/workflow/configs/attempt_1/rl.toml
+  Orchestrator:     /home/ubuntu/runs/workflow/configs/attempt_1/resolved/orchestrator.json
+  Trainer:          /home/ubuntu/runs/workflow/configs/attempt_1/resolved/trainer.json
+  Inference:        /home/ubuntu/runs/workflow/configs/attempt_1/resolved/inference.json
+  Envs:             /home/ubuntu/runs/workflow/configs/attempt_1/resolved/envs/*/*.json[0m[0m
+[2m21:28:24[0m [1m   INFO[0m [1m[22mLogs:
+  Trainer:          tail -F /home/ubuntu/runs/workflow/logs/attempt_1/trainer.log
+   All ranks:       tail -F /home/ubuntu/runs/workflow/logs/attempt_1/trainer/torchrun/*/*/*/*.log
+  Orchestrator:     tail -F /home/ubuntu/runs/workflow/logs/attempt_1/orchestrator.log
+  Inference:        tail -F /home/ubuntu/runs/workflow/logs/attempt_1/inference.log
+  Envs:             tail -F /home/ubuntu/runs/workflow/logs/attempt_1/envs/*/*.log
+   ap-workflow:     tail -F /home/ubuntu/runs/workflow/logs/attempt_1/envs/train/ap-workflow.log[0m[0m
+[2m21:28:24[0m [33m[1mWARNING[0m [33m[1m[22mNon-interactive session - not auto-starting a dashboard (the output dir stays registered)[0m[0m
+[2m21:28:24[0m [1m   INFO[0m [1m[22mUsing local->physical GPU mapping: {0: 0, 1: 0}[0m[0m
+[2m21:28:24[0m [1m   INFO[0m [1m[22mStarting inference on GPU(s) 0[0m[0m
+[2m21:28:24[0m [1m   INFO[0m [1m[22mStarting ap-workflow server[0m[0m
+[2m21:28:24[0m [1m   INFO[0m [1m[22mStarting orchestrator[0m[0m
+[2m21:28:24[0m [1m   INFO[0m [1m[22mStarting trainer on GPU(s) 0[0m[0m
+[2m21:28:24[0m [32m[1mSUCCESS[0m [32m[1m[22mLauncher complete[0m[0m
+[2m23:03:09[0m [33m[1mWARNING[0m [33m[1m[22mReceived SIGTERM, terminating all processes...[0m[0m
+!!! training non-zero or hit the 6h cap
+adapter from /home/ubuntu/runs/workflow/broadcasts/step_23
+=== 2026-10-28 23:03:24 trained eval
+Success: LoRA adapter 'workflow' added successfully.[2m23:05:07[0m [1m   INFO[0m [1m[22mStarting eval[0m[0m
+[2m23:05:07[0m [33m[1mWARNING[0m [33m[1m[22mNon-interactive session - not auto-starting a dashboard (the output dir stays registered)[0m[0m
+[2m23:05:09[0m [1m   INFO[0m [1m[22mStarting ap-workflow-test server[0m[0m
+[2m23:05:09[0m [1m   INFO[0m [1m[22mConfigs:
+  Command:          /home/ubuntu/runs/wf-trained/configs/attempt_1/command.txt
+  Launch TOML:      /home/ubuntu/runs/wf-trained/configs/attempt_1/eval.toml
+  Eval:             /home/ubuntu/runs/wf-trained/configs/attempt_1/resolved/eval.json
+  Envs:             /home/ubuntu/runs/wf-trained/configs/attempt_1/resolved/envs/eval/*.json
+   ap-workflow...:  /home/ubuntu/runs/wf-trained/configs/attempt_1/resolved/envs/eval/ap-workflow-test.json[0m[0m
+[2m23:05:09[0m [1m   INFO[0m [1m[22mLogs:
+  Eval:             tail -F /home/ubuntu/runs/wf-trained/logs/attempt_1/eval.log
+  Envs:             tail -F /home/ubuntu/runs/wf-trained/logs/attempt_1/envs/*/*.log
+   ap-workflow...:  tail -F /home/ubuntu/runs/wf-trained/logs/attempt_1/envs/eval/ap-workflow-test.log[0m[0m
+[2m23:11:12[0m [32m[1mSUCCESS[0m [32m[1m[22mEval finished![0m[0m
+=== 2026-10-28 23:11:12 DONE
