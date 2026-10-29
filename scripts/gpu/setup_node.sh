@@ -15,7 +15,8 @@ git config --global url."https://github.com/".insteadOf "git@github.com:"   # su
 cd prime-rl && git checkout -q "$PRIME_RL_COMMIT" \
   && (git apply --check ~/honesty-rl/patches/prime-rl-qwen3_5-tied-lm-head.patch 2>/dev/null && git apply ~/honesty-rl/patches/prime-rl-qwen3_5-tied-lm-head.patch || echo "tied lm_head patch already applied") \
   && (git apply --check ~/honesty-rl/patches/prime-rl-share-gpu.patch 2>/dev/null && git apply ~/honesty-rl/patches/prime-rl-share-gpu.patch || echo "share-gpu patch already applied") && git submodule update --init --recursive \
-  && git submodule foreach --recursive "git checkout -f -q HEAD" && uv sync --all-extras   # empty-tree submodules; GPU extras (torch, vllm, flash-attn)
+  && git submodule foreach --recursive "git checkout -f -q HEAD" \
+  && for i in 1 2 3 4; do GIT_TERMINAL_PROMPT=0 uv sync --all-extras && break; echo "uv sync failed (attempt $i), retrying"; sleep 60; done && .venv/bin/python -c "import torch"   # empty-tree submodules; GPU extras (torch, vllm, flash-attn)
 
 # Our environments + the capability-check env, into prime-rl's venv
 uv pip install -e ~/potemkin-bench/environments/potemkin_bench -e ~/safety-net-bench/environments/safety_net_bench

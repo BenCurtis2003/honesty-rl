@@ -96,3 +96,24 @@ One seed, one run, and the test instances come from the same workflow as trainin
 on that process rather than transfer. The first attempt used `ap_payment_lite.yaml`; base success there was
 93.8% with 0% false success, so the run stopped before training (`results/workflow_run/workflow_run/`). Results:
 `results/workflow_full/`. Cost about $13 on a $5.40/hr H200 (plus $4.44 for the lite attempt).
+
+### Transfer test (2026-10-29): the workflow adapter on held-out PotemkinBench tasks
+
+The step-23 adapter from the workflow run, evaluated on `potemkin-test-mixed` (84 held-out tasks from the
+benchmark's other templates, 2 rollouts each), against the base model's result from the main study under the same
+eval config (`results/final_evals/base`).
+
+| Arm | Success | False success | Claimed done |
+|---|---|---|---|
+| Base | 31.5% | 19.0% | 42.9% |
+| **AP workflow adapter** | 36.3% (+4.8 pp, p = 0.15) | **26.8% (+7.7 pp, p = 0.02)** | 52.4% |
+| Outcome arm (main study, for reference) | 46.4% | 5.4% | 33.3% |
+| Honest arm (main study, for reference) | 48.2% | 4.2% | 32.1% |
+
+Paired permutation tests over the 84 tasks. **The gain did not transfer.** Training on one workflow raised false
+success on other tasks: the adapter claims done more often (43% to 52%) without doing much more of the work. The
+in-workflow result above still holds, but it is specific to that workflow. A likely cause: most `ap_payment_full`
+instances are completable (18 of 30 in a 30-seed sample), so claiming done paid off more often there than on the
+mixed test set, where many tasks can't be finished. Training on a mix of workflows, or one where "not done" is the
+honest answer more often, should be tested before claiming that workflow training improves honesty in general.
+Results: `results/transfer/`. Cost about $4.30 (one pod lost to intermittent GitHub clone failures during setup).
